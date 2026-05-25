@@ -11,9 +11,11 @@ This repository is an automatic data filtering library specialized in Korean dat
   * ~~Length Filter~~
   * ~~Harmful Words Filter~~
   * ~~Sign Abusing Filter~~
-  * PII Filter
-  * Spam Filter
+  * ~~PII Filter~~
+  * ~~Spam Filter~~
+  * Main API
   * Language Filter via FastText
   * Perplexity Score Filter
   * Morphological Filter
   * Model Filter via BERT
+  * Wrapping with a Python library
