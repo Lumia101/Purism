@@ -7,7 +7,7 @@ class PurifyConfig():
         self.normalizer = Normalizer()
         self.filters = filters
 
-    def Purify(self, text: str):
+    def purify(self, text: str):
         text_cleaned = self.normalizer.normalize(text)
 
         for filter in self.filters:
