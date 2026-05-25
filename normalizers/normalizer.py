@@ -23,11 +23,3 @@ class Normalizer():
         text = self.whitespace_re.sub(" ", text).strip()
 
         return text
-
-if __name__ == "__main__":
-    normalizer = Normalizer()
-    dirty_text = "<b>안녕하세요!!</b>   반갑습니당\n\n\n  Ã«안녕하세요 &nbsp; ㅋㅋㅋㅋㅋㅋㅋㅋ"
-    
-    clean_text = normalizer.normalize(dirty_text)
-    print(f"Original: {dirty_text}")
-    print(f"Cleaned: {clean_text}")
