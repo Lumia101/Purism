@@ -1,1 +1,2 @@
 ftfy
+lingua-language-detector
