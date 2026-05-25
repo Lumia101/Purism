@@ -1,5 +1,5 @@
 import re
-from DataPrism.base_filter import BaseFilter
+from base_filter import BaseFilter
 
 class LengthFilter(BaseFilter):
     def __init__(self, min_len=50, max_len=10000):
