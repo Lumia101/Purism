@@ -13,14 +13,14 @@ class PurifyConfig():
         for filter in self.filters:
             if not filter.apply(text_cleaned):
                 return {
-                    "raw_text": text
+                    "raw_text": text,
                     "passed": False,
                     "filtered_by": filter.__class__.__name__,
                     "normalized_text": text_cleaned
                 }
 
         return {
-            "raw_text": text
+            "raw_text": text,
             "passed": True,
             "filtered_by": None,
             "normalized_text": text_cleaned
