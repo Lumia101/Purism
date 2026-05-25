@@ -14,7 +14,7 @@ This repository is an automatic data filtering library specialized in Korean dat
   * ~~PII Filter~~
   * ~~Spam Filter~~
   * Main API
-  * Language Filter via FastText
+  * Language Filter via Lingua
   * Perplexity Score Filter
   * Morphological Filter
   * Model Filter via BERT
