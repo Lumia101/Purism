@@ -1,6 +1,8 @@
+# Load necessary libraries
 import re
 from filters.base_filter import BaseFilter
 
+# If the length is too long or too short, remove
 class LengthFilter(BaseFilter):
     def __init__(self, min_len=50, max_len=10000):
         self.min_len = min_len
@@ -12,8 +14,10 @@ class LengthFilter(BaseFilter):
             return True
         return False
 
+# Remove any inappropriate words
+# You can customize settings by editing the .txt file.
 class HarmfulWordsFilter(BaseFilter):
-    def __init__(self, filepath="harmful_words.txt", threshold=4):
+    def __init__(self, filepath="./word_data/harmful_words.txt", threshold=4):
         self.filepath = filepath
         self.pattern = self._load_and_compile()
         self.threshold = threshold
@@ -39,8 +43,10 @@ class HarmfulWordsFilter(BaseFilter):
                 return False
         return True
 
+# It is virtually identical to HarmfulWordsFilter.
+# However, it is used to prevent errors and for ease of use. 
 class SpamWordsFilter(BaseFilter):
-    def __init__(self, filepath="spam_words.txt", threshold=8):
+    def __init__(self, filepath="./word_data/spam_words.txt", threshold=8):
         self.filepath = filepath
         self.pattern = self.load_and_compile()
         self.threshold = threshold
@@ -59,7 +65,6 @@ class SpamWordsFilter(BaseFilter):
         if not self.pattern:
             return False
 
-        # 효율적인 처리를 위해 3개까지만 찾고 중단
         count = 0
         for _ in self.pattern.finditer(text):
             count += 1
@@ -67,6 +72,7 @@ class SpamWordsFilter(BaseFilter):
                 return False
         return True
 
+# If text have used too many symbols, remove them 
 class SignAbuseFilter(BaseFilter):
     def __init__(self, threshold=0.3):
         self.threshold = threshold
@@ -82,6 +88,7 @@ class SignAbuseFilter(BaseFilter):
             return False
         return True
 
+# If personal information is included, remove it 
 class PIIFilter(BaseFilter):
     def __init__(self):
         # 주요 개인정보 패턴들을 사전 형태로 정리
