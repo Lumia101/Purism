@@ -1,5 +1,5 @@
 import re
-from base_filter import BaseFilter
+from filters.base_filter import BaseFilter
 
 class LengthFilter(BaseFilter):
     def __init__(self, min_len=50, max_len=10000):
@@ -97,43 +97,3 @@ class PIIFilter(BaseFilter):
             if pattern.search(text):
                 return False
         return True
-
-if __name__ == "__main__":
-    filters = [
-        HarmfulWordsFilter(),
-        SpamWordsFilter(),
-        LengthFilter(10, 10000),
-        SignAbuseFilter(0.2),
-        PIIFilter(),
-    ]
-
-    test = [
-        "전라디언 새끼가 어디 와서 까부냐 ㅅㅂ럼아 느금마 개새끼",
-        "한국에는 저런 이상한 극우 사칭들이 너무 많아요",
-        "================== 공지 =====================",
-        "무료 황금성 바다이야기 무료 야애니 출장맛사지 무료 포커",
-        "요즘 인공지능 많이 발전했네.",
-        "침대에 드러누워서 ㅅㅅ하는 거유미소녀 예쁜보지 ㅗㅜㅑ 무료 야애니",
-        "아 미친",
-        "광양출장맛사지➵예약♡대구 모텔 추천（카톡hwp63）♠﹛мss798.сом﹜━광양오피스 걸♚광양콜걸만남γ광양대구 여관►광양서울 조건 만남↲광양군산 여관",
-        "2024년 12월 3일에 무슨 일이 일어났는지 기억하자.",
-        "홈 메뉴 카테고리 바로가기 클릭 로그인 간편로그인 소셜로그인 회원가입 이메일문의",
-        "오늘은 대한민국의 현대사를 배워보도록 하겠습니다.",
-        "유즈하 리코 에로용사 유래",
-        "010-7559-9187로 전화를 해주세요.",
-        "아르케아 테스티파이 비욘드 손배치",
-        "광고 문의: hikari86@proton.com",
-        "내 삼성카드 번호: 0182 1917 1918 6673",
-        "-------- 주목하시오, 주목! --------------- 로그인 -----",
-        "때려쳐때려쳐! 너 이거 살인이야!",
-        "뭐 임마",
-        "게관위는 당장 <단간론파 V3: 모두의 살인게임 신학기>에 등급을 부여하라!"
-    ]
-
-    for i, value in enumerate(test):
-        passed = all(f.apply(test[i]) for f in filters)
-
-        if passed:
-            print(f"{i+1}: 통과")
-        else:
-            print(f"{i+1}: 검열됨")
