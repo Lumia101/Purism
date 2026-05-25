@@ -21,17 +21,17 @@ class HarmfulWordsFilter(BaseFilter):
     def _load_and_compile(self):
         with open(self.filepath, 'r', encoding='utf-8') as f:
             words = sorted(list(set(line.strip() for line in f if line.strip())), key=len, reverse=True)
-            
+
         if not words:
             raise ValueError(f"It seems {self.filepath} is empty file.")
-            
+
         combined_pattern = '|'.join(map(re.escape, words))
         return re.compile(combined_pattern)
 
     def apply(self, text: str):
         if not self.pattern:
             return False
-        
+
         count = 0
         for _ in self.pattern.finditer(text):
             count += 1
@@ -42,23 +42,23 @@ class HarmfulWordsFilter(BaseFilter):
 class SpamWordsFilter(BaseFilter):
     def __init__(self, filepath="spam_words.txt", threshold=8):
         self.filepath = filepath
-        self.pattern = self._load_and_compile()
+        self.pattern = self.load_and_compile()
         self.threshold = threshold
 
-    def _load_and_compile(self):
+    def load_and_compile(self):
         with open(self.filepath, 'r', encoding='utf-8') as f:
             words = sorted(list(set(line.strip() for line in f if line.strip())), key=len, reverse=True)
-            
+
         if not words:
             raise ValueError(f"It seems {self.filepath} is empty file.")
-            
+
         combined_pattern = '|'.join(map(re.escape, words))
         return re.compile(combined_pattern)
 
     def apply(self, text: str):
         if not self.pattern:
             return False
-        
+
         # 효율적인 처리를 위해 3개까지만 찾고 중단
         count = 0
         for _ in self.pattern.finditer(text):
@@ -82,12 +82,29 @@ class SignAbuseFilter(BaseFilter):
             return False
         return True
 
+class PIIFilter(BaseFilter):
+    def __init__(self):
+        # 주요 개인정보 패턴들을 사전 형태로 정리
+        self.pii_patterns = {
+            "resident_number": re.compile(r'\d{2}([01]\d[0123]\d)-?[1-4]\d{6}'),
+            "phone_number": re.compile(r'01[016789]-?\d{3,4}-?\d{4}'),
+            "email": re.compile(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'),
+            "card_number": re.compile(r'(?:\d{4}[- ]?){3}\d{4}')
+        }
+
+    def apply(self, text: str):
+        for name, pattern in self.pii_patterns.items():
+            if pattern.search(text):
+                return False
+        return True
+
 if __name__ == "__main__":
     filters = [
         HarmfulWordsFilter(),
         SpamWordsFilter(),
         LengthFilter(10, 10000),
-        SignAbuseFilter(0.2)
+        SignAbuseFilter(0.2),
+        PIIFilter(),
     ]
 
     test = [
@@ -99,14 +116,24 @@ if __name__ == "__main__":
         "침대에 드러누워서 ㅅㅅ하는 거유미소녀 예쁜보지 ㅗㅜㅑ 무료 야애니",
         "아 미친",
         "광양출장맛사지➵예약♡대구 모텔 추천（카톡hwp63）♠﹛мss798.сом﹜━광양오피스 걸♚광양콜걸만남γ광양대구 여관►광양서울 조건 만남↲광양군산 여관",
-        "2024년 12월 3일에 무슨 일이 일어났는지 기억하자.", 
-        "홈 메뉴 카테고리 바로가기 클릭 로그인 간편로그인 소셜로그인 회원가입 이메일문의"
+        "2024년 12월 3일에 무슨 일이 일어났는지 기억하자.",
+        "홈 메뉴 카테고리 바로가기 클릭 로그인 간편로그인 소셜로그인 회원가입 이메일문의",
+        "오늘은 대한민국의 현대사를 배워보도록 하겠습니다.",
+        "유즈하 리코 에로용사 유래",
+        "010-7559-9187로 전화를 해주세요.",
+        "아르케아 테스티파이 비욘드 손배치",
+        "광고 문의: hikari86@proton.com",
+        "내 삼성카드 번호: 0182 1917 1918 6673",
+        "-------- 주목하시오, 주목! --------------- 로그인 -----",
+        "때려쳐때려쳐! 너 이거 살인이야!",
+        "뭐 임마",
+        "게관위는 당장 <단간론파 V3: 모두의 살인게임 신학기>에 등급을 부여하라!"
     ]
 
     for i, value in enumerate(test):
         passed = all(f.apply(test[i]) for f in filters)
 
         if passed:
-            print(f"{i}: 통과")
+            print(f"{i+1}: 통과")
         else:
-            print(f"{i}: 검열됨")
+            print(f"{i+1}: 검열됨")
