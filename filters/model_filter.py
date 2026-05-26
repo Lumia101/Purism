@@ -5,14 +5,13 @@ from filters.base_filter import BaseFilter
 ppl_model_id = "LiquidAI/LFM2.5-1.2B-Instruct"
 
 class PPLFilter(BaseFilter):
-    def __init__(self, drop_ratio=180.0):
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+    def __init__(self, ppl_threshold=180.0):
         self.quant_config = BitsAndBytesConfig(load_in_8bit=True)
         self.model = AutoModelForCausalLM.from_pretrained(
             "LiquidAI/LFM2.5-1.2B-Instruct",
-            device_map=self.device,
+            device_map="auto",
             dtype="auto",
-            quantization_config=quant_config
+            quantization_config=self.quant_config
         )
         self.model.eval()
         
@@ -25,16 +24,20 @@ class PPLFilter(BaseFilter):
             return_tensors="pt",
             truncation=True,
             max_length=512
-        ).to(self.device)
+        ).to(self.model.device)
         
         with torch.no_grad():
-            output = self.model(**enc, labels=enc["input_ids"])
+            output = self.model(
+                **enc,
+                labels=enc["input_ids"]
+            )
             loss = output.loss
 
         return torch.exp(loss).item()
         
     def apply(self, text: str):
-        if not text.strip():
+        text = text.strip()
+        if not text:
             return False
 
         ppl = self.compute_ppl(text)
