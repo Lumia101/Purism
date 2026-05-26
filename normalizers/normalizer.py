@@ -10,7 +10,7 @@ class UnicodeCleaner(BaseNormalizer):
         if type in method:
             self.unicode_type = type
         else:
-            raise ValueError("Invalid Unicode Normalization method. Available method: ["NFC", "NFD", "NFKC", "NFKD"]")
+            raise ValueError("Invalid Unicode Normalization method.")
 
     def normalize(self, text: str) -> str:
         if not text:
