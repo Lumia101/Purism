@@ -1,6 +1,7 @@
 # Load libraries
 import re
 from filters.base_filter import BaseFilter
+from importlib.resources import files
 
 # If the length is too long or too short, remove it
 class LengthFilter(BaseFilter):
@@ -17,8 +18,10 @@ class LengthFilter(BaseFilter):
 # Remove any inappropriate words
 # You can customize settings by editing the .txt file.
 class HarmfulWordsFilter(BaseFilter):
-    def __init__(self, filepath="./word_data/harmful_words.txt", threshold=4):
-        self.filepath = filepath
+    def __init__(self, threshold=4):
+        self.filepath = files("dataprism.resources").joinpath(
+            "harmful_words.txt"
+        )
         self.pattern = self.load_and_compile()
         self.threshold = threshold
 
@@ -29,7 +32,7 @@ class HarmfulWordsFilter(BaseFilter):
             
         # If the file is empty, stop running.
         if not words:
-            raise ValueError(f"It seems {self.filepath} is empty file.")
+            raise ValueError("It seems the list of forbidden words is empty.")
 
         combined_pattern = '|'.join(map(re.escape, words))
         return re.compile(combined_pattern)
@@ -49,8 +52,10 @@ class HarmfulWordsFilter(BaseFilter):
 # It is virtually identical to HarmfulWordsFilter.
 # However, it is used to prevent errors and accidental mistakes.
 class SpamWordsFilter(BaseFilter):
-    def __init__(self, filepath="./word_data/spam_words.txt", threshold=8):
-        self.filepath = filepath
+    def __init__(self, threshold=8):
+        self.filepath = files("dataprism.resources").joinpath(
+            "spam_words.txt"
+        )
         self.pattern = self.load_and_compile()
         self.threshold = threshold
 
@@ -59,7 +64,7 @@ class SpamWordsFilter(BaseFilter):
             words = sorted(list(set(line.strip() for line in f if line.strip())), key=len, reverse=True)
 
         if not words:
-            raise ValueError(f"It seems {self.filepath} is empty file.")
+            raise ValueError("It seems the list of forbidden words is empty.")
 
         combined_pattern = '|'.join(map(re.escape, words))
         return re.compile(combined_pattern)
