@@ -3,12 +3,12 @@ from filters.base_filter import BaseFilter
 
 class LanguageFilter(BaseFilter):
     def __init__(self):
-        self.judge = LanguageDetectorBuilder.from_languages(Language.KOREAN).build()
+        self.judge = LanguageDetectorBuilder.from_all_languages().build()
 
     def apply(self, text: str):
         match = self.judge.detect_language_of(text)
 
-        if match == Language.KOREAN:
+        if match.iso_code_639_1.name == "KO":
             return True
         else:
             return False
