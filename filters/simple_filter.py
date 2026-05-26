@@ -2,14 +2,14 @@
 import re
 from filters.base_filter import BaseFilter
 
-# If the length is too long or too short, remove
+# If the length is too long or too short, remove it
 class LengthFilter(BaseFilter):
     def __init__(self, min_len=50, max_len=10000):
         self.min_len = min_len
         self.max_len = max_len
 
     def apply(self, text: str):
-        actual_len = len(text.strip())
+        actual_len = len(text.strip()) # Remove the blank
         if self.min_len <= actual_len <= self.max_len:
             return True
         return False
@@ -19,13 +19,15 @@ class LengthFilter(BaseFilter):
 class HarmfulWordsFilter(BaseFilter):
     def __init__(self, filepath="./word_data/harmful_words.txt", threshold=4):
         self.filepath = filepath
-        self.pattern = self._load_and_compile()
+        self.pattern = self.load_and_compile()
         self.threshold = threshold
 
-    def _load_and_compile(self):
+    def load_and_compile(self):
+        # Open .txt file which contains harmful words
         with open(self.filepath, 'r', encoding='utf-8') as f:
             words = sorted(list(set(line.strip() for line in f if line.strip())), key=len, reverse=True)
-
+            
+        # If the file is empty, stop running.
         if not words:
             raise ValueError(f"It seems {self.filepath} is empty file.")
 
@@ -36,6 +38,7 @@ class HarmfulWordsFilter(BaseFilter):
         if not self.pattern:
             return False
 
+        # Detects and stops only a set number of times for speed
         count = 0
         for _ in self.pattern.finditer(text):
             count += 1
@@ -44,7 +47,7 @@ class HarmfulWordsFilter(BaseFilter):
         return True
 
 # It is virtually identical to HarmfulWordsFilter.
-# However, it is used to prevent errors and for ease of use. 
+# However, it is used to prevent errors and accidental mistakes.
 class SpamWordsFilter(BaseFilter):
     def __init__(self, filepath="./word_data/spam_words.txt", threshold=8):
         self.filepath = filepath
@@ -72,7 +75,7 @@ class SpamWordsFilter(BaseFilter):
                 return False
         return True
 
-# If text have used too many symbols, remove them 
+# If text have used too many symbols, remove it
 class SignAbuseFilter(BaseFilter):
     def __init__(self, threshold=0.3):
         self.threshold = threshold
@@ -88,10 +91,10 @@ class SignAbuseFilter(BaseFilter):
             return False
         return True
 
-# If personal information is included, remove it 
+# If personal information is included, remove it
 class PIIFilter(BaseFilter):
     def __init__(self):
-        # 주요 개인정보 패턴들을 사전 형태로 정리
+        # Compiling key forms of personal information
         self.pii_patterns = {
             "resident_number": re.compile(r'\d{2}([01]\d[0123]\d)-?[1-4]\d{6}'),
             "phone_number": re.compile(r'01[016789]-?\d{3,4}-?\d{4}'),
@@ -100,6 +103,7 @@ class PIIFilter(BaseFilter):
         }
 
     def apply(self, text: str):
+        # Return False immediately if any personal information is found
         for name, pattern in self.pii_patterns.items():
             if pattern.search(text):
                 return False
