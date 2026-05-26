@@ -16,6 +16,5 @@ This repository is an automatic data filtering library specialized in Korean dat
   * Main API
   * ~~Language Filter via Lingua~~
   * ~~Dedup Filter~~
-  * Perplexity Score Filter
-  * Model Filter via BERT
+  * ~~Perplexity Score Filter~~
   * Wrapping with a Python library
