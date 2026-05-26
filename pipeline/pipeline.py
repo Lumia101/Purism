@@ -9,7 +9,7 @@ class PurifyConfig():
 
     def purify(self, text: str):
         for normalizer in self.normalizer:
-            text_cleaned = self.normalizer.normalize(text)
+            text_cleaned = normalizer.normalize(text)
 
         for filter in self.filters:
             if not filter.apply(text_cleaned):
