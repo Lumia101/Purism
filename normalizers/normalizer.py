@@ -4,7 +4,7 @@ import html
 from ftfy import fix_text
 
 class UnicodeCleaner():
-    def __init__(self, type="NFC": str):
+    def __init__(self, type="NFC"):
         method = ["NFC", "NFD", "NFKC", "NFKD"]
         if type in method:
             self.unicode_type = type
