@@ -1,9 +1,11 @@
+# Load libraries
 from normalizers.base_normalizer import BaseNormalizer
 import re
 import unicodedata
 import html
 from ftfy import fix_text
 
+# Unicode-based text normalization
 class UnicodeCleaner(BaseNormalizer):
     def __init__(self, type="NFC"):
         method = ["NFC", "NFD", "NFKC", "NFKD"]
@@ -19,6 +21,7 @@ class UnicodeCleaner(BaseNormalizer):
         cleaned_text = unicodedata.normalize(self.unicode_type, text)
         return cleaned_text
 
+# Remove useless sentences such as HTML tags
 class UICleaner(BaseNormalizer):
     def __init__(self):
         self.html_tag_re = re.compile(r'<[^>]+>')
@@ -34,6 +37,7 @@ class UICleaner(BaseNormalizer):
 
         return text
 
+# Reduce too many identical characters
 class TextCleaner(BaseNormalizer):
     def __init__(self):
         self.whitespace_re = re.compile(r'\s+')
