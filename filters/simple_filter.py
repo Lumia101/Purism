@@ -1,4 +1,4 @@
-# Load necessary libraries
+# Load libraries
 import re
 from filters.base_filter import BaseFilter
 
