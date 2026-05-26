@@ -18,12 +18,15 @@ class PPLFilter(BaseFilter):
         self.drop_ratio = ppl_threshold
 
     def compute_ppl(self, text: str):
+        device = next(
+            self.model.parameters()
+        ).device
         enc = self.tokenizer(
             text,
             return_tensors="pt",
             truncation=True,
             max_length=512
-        ).to(self.model.device)
+        ).to(device)
         
         with torch.no_grad():
             output = self.model(
@@ -32,11 +35,16 @@ class PPLFilter(BaseFilter):
             )
             loss = output.loss
 
-        return torch.exp(loss).item()
+        ppl = torch.exp(loss)
+        
+        if torch.isinf(ppl):
+            return float("inf")
+            
+        return ppl.item()
         
     def apply(self, text: str):
         text = text.strip()
-        if not text:
+        if len(text) < 10:
             return False
 
         ppl = self.compute_ppl(text)
