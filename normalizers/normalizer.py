@@ -1,9 +1,10 @@
+from normalizers.base_normalizer import BaseNormalizer
 import re
 import unicodedata
 import html
 from ftfy import fix_text
 
-class UnicodeCleaner():
+class UnicodeCleaner(BaseNormalizer):
     def __init__(self, type="NFC"):
         method = ["NFC", "NFD", "NFKC", "NFKD"]
         if type in method:
@@ -18,7 +19,7 @@ class UnicodeCleaner():
         cleaned_text = unicodedata.normalize(self.unicode_type, text)
         return cleaned_text
 
-class UICleaner():
+class UICleaner(BaseNormalizer):
     def __init__(self):
         self.html_tag_re = re.compile(r'<[^>]+>')
         self.control_char_re = re.compile(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]')
@@ -33,7 +34,7 @@ class UICleaner():
 
         return text
 
-class TextCleaner():
+class TextCleaner(BaseNormalizer):
     def __init__(self):
         self.whitespace_re = re.compile(r'\s+')
         self.repeat_re = re.compile(r"(ㅋ|ㅎ|ㅠ|ㅜ|!|\.)\1{2,}")
