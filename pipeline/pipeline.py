@@ -1,7 +1,9 @@
+# Import all created Python codes from this repository
 from normalizers.normalizer import TextCleaner, UICleaner, UnicodeCleaner
 from filters.simple_filter import LengthFilter, HarmfulWordsFilter, SpamWordsFilter, SignAbuseFilter, PIIFilter
 from filters.advanced_filter import LanguageFilter
 
+# Setting Settings for Data Purification
 class PurifyConfig():
     def __init__(self, filters, normalizer):
         self.normalizer = normalizer
