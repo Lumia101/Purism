@@ -2,21 +2,20 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from filters.base_filter import BaseFilter
 
-ppl_model_id = "LiquidAI/LFM2.5-1.2B-Instruct"
-
 class PPLFilter(BaseFilter):
     def __init__(self, ppl_threshold=180.0):
+        model_id = "LiquidAI/LFM2.5-1.2B-Instruct"
         self.quant_config = BitsAndBytesConfig(load_in_8bit=True)
         self.model = AutoModelForCausalLM.from_pretrained(
-            "LiquidAI/LFM2.5-1.2B-Instruct",
+            model_id,
             device_map="auto",
             dtype="auto",
             quantization_config=self.quant_config
         )
         self.model.eval()
         
-        self.tokenizer = AutoTokenizer.from_pretrained("LiquidAI/LFM2.5-1.2B-Instruct")
-        self.drop_ratio = drop_ratio
+        self.tokenizer = AutoTokenizer.from_pretrained(model_id)
+        self.drop_ratio = ppl_threshold
 
     def compute_ppl(self, text: str):
         enc = self.tokenizer(
