@@ -1,5 +1,4 @@
 from normalizers.normalizer import TextCleaner, UICleaner, UnicodeCleaner
-from filters.base_filter import BaseFilter
 from filters.simple_filter import LengthFilter, HarmfulWordsFilter, SpamWordsFilter, SignAbuseFilter, PIIFilter
 from filters.advanced_filter import LanguageFilter
 
