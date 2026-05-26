@@ -1,14 +1,16 @@
 from normalizers.normalizer import Normalizer
 from filters.base_filter import BaseFilter
 from filters.simple_filter import LengthFilter, HarmfulWordsFilter, SpamWordsFilter, SignAbuseFilter, PIIFilter
+from filters.advanced_filter import LanguageFilter
 
 class PurifyConfig():
-    def __init__(self, filters):
-        self.normalizer = Normalizer()
+    def __init__(self, filters, normalizer):
+        self.normalizer = normalizer
         self.filters = filters
 
     def purify(self, text: str):
-        text_cleaned = self.normalizer.normalize(text)
+        for normalizer in self.normalizer:
+            text_cleaned = self.normalizer.normalize(text)
 
         for filter in self.filters:
             if not filter.apply(text_cleaned):
