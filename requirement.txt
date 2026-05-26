@@ -1,3 +1,5 @@
 ftfy
 lingua-language-detector
 datasketch[redis]
+transformers
+bitsandbytes
