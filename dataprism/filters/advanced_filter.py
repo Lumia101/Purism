@@ -2,7 +2,7 @@
 import hashlib
 from lingua import Language, LanguageDetectorBuilder
 from datasketch import MinHash, MinHashLSH
-from .filters.base_filter import BaseFilter
+from .base_filter import BaseFilter
 
 # Use the lingua library to remove non-Korean sentences
 class LanguageFilter(BaseFilter):
