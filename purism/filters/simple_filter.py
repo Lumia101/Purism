@@ -49,6 +49,38 @@ class HarmfulWordsFilter(BaseFilter):
                 return False
         return True
 
+class SpamWordsFilter(BaseFilter):
+    def __init__(self, threshold=8):
+        self.filepath = files("purism.resources").joinpath(
+            "spam_words.txt"
+        )
+        self.pattern = self.load_and_compile()
+        self.threshold = threshold
+
+    def load_and_compile(self):
+        # Open .txt file which contains harmful words
+        with open(self.filepath, 'r', encoding='utf-8') as f:
+            words = sorted(list(set(line.strip() for line in f if line.strip())), key=len, reverse=True)
+            
+        # If the file is empty, stop running.
+        if not words:
+            raise ValueError("It seems the list of forbidden words is empty.")
+
+        combined_pattern = '|'.join(map(re.escape, words))
+        return re.compile(combined_pattern)
+
+    def apply(self, text: str):
+        if not self.pattern:
+            return False
+
+        # Detects and stops only a set number of times for speed
+        count = 0
+        for _ in self.pattern.finditer(text):
+            count += 1
+            if count >= self.threshold:
+                return False
+        return True
+
 # If text have used too many symbols, remove it
 class SignAbuseFilter(BaseFilter):
     def __init__(self, threshold=0.3):
