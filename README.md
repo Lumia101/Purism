@@ -1,24 +1,10 @@
-# Purism: A very convenient data purification library
-**Puri**fy **s**yste**m**
+# Purism: Automatic data filtering library specialized in Korean data purification
+> **Puri**fy **s**yste**m**
 
-> ⚠️ This repository is still under development. 
-
-# What is this repository?
+## Summary
 This repository is an automatic data filtering library specialized in Korean data purification.
-
-# To-do list
-* v1.0.0
-  * ~~Length Filter~~
-  * ~~Harmful Words Filter~~
-  * ~~Sign Abusing Filter~~
-  * ~~PII Filter~~
-  * ~~Spam Filter~~
-  * ~~Language Filter via Lingua~~
-  * ~~Dedup Filter~~
-  * ~~Perplexity Score Filter~~
-
-* v 1.1.0
-  * Add Multiprocessing
  
-# How to use
+# Quickstart
 Coming soon...
+
+## API
