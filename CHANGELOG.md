@@ -8,3 +8,9 @@
 
 ## Normalizers
 * Add 3 Normalizers (Unicode, UI, Text)
+
+# v1.0.1
+> Bug fixes
+
+## Filters
+* Fixed an issue where an error occurred when calling DedupFilter.
