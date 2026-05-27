@@ -1,5 +1,5 @@
-# DataPrism
-**Data** **P**u**ri**fication **s**yste**m**
+# Purism: A very convenient data purification library
+**Puri**fy **s**yste**m**
 
 > ⚠️ This repository is still under development. 
 
