@@ -1,7 +1,7 @@
 # Import all created Python codes from this repository
 from purism.normalizers.normalizer import TextCleaner, UICleaner, UnicodeCleaner
 from purism.filters.simple_filter import LengthFilter, HarmfulWordsFilter, SpamWordsFilter, SignAbuseFilter, PIIFilter
-from purism.filters.advanced_filter import LanguageFilter
+from purism.filters.advanced_filter import LanguageFilter, DedupFilter
 from purism.filters.model_filter import PPLFilter
 
 # Setting Settings for Data Purification

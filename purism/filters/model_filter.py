@@ -2,6 +2,7 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from .base_filter import BaseFilter
 
+# Measure the PPL of corpus and filter corpus with excessively high PPL.
 class PPLFilter(BaseFilter):
     def __init__(self, ppl_threshold=180.0):
         model_id = "LiquidAI/LFM2.5-1.2B-Instruct"
