@@ -70,3 +70,8 @@ You can see that corpus marked as "passed" are better than corpus marked as "fil
 
 ## API
 This library contains many more types of filters in addition to the two mentioned earlier. If you would like to see more features, please visit [this page.](https://github.com/Lumia101/Purism/blob/main/API.md)
+
+# Limitations
+
+* This library can accurately filter only Korean text. Modification of the source code is required to use other languages.
+* This library is not always accurate. It can filter out non-harmful corpora, but may fail to filter out some harmful corpora.
