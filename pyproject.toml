@@ -23,5 +23,8 @@ dependencies = [
 [project.urls]
 "Homepage" = "https://github.com/Lumia101/DataPrism/tree/main"
 
+[tool.setuptools.packages.find]
+where = ["."]
+
 [tool.setuptools.package-data]
 "dataprism.resources" = ["*.txt"]
