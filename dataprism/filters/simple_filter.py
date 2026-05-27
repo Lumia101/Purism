@@ -1,6 +1,6 @@
 # Load libraries
 import re
-from .filters.base_filter import BaseFilter
+from .base_filter import BaseFilter
 from importlib.resources import files
 
 # If the length is too long or too short, remove it
