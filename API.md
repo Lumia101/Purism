@@ -195,7 +195,72 @@ class **PIIFilter(BaseNormalizer):**
 
 > def **__init__():**
 
-> def **normalize(text):**
+> def **apply(text):**
+
+|value|type|function|
+|:-------------|:------:|:---------------|
+|text|str|Receives the text to filter.|
+
+> **Return value**
+```Python
+return bool
+```
+
+---
+
+class **LanguageFilter(BaseNormalizer):**
+
+> def **__init__(threshold=0.6):**
+
+|value|type|function|
+|:-------------|:------:|:---------------|
+|threshold|float|Sets how strictly to measure whether the corpus is Korean.|
+
+> def **apply(text):**
+
+|value|type|function|
+|:-------------|:------:|:---------------|
+|text|str|Receives the text to filter.|
+
+> **Return value**
+```Python
+return bool
+```
+
+---
+
+class **DedupFilter(BaseNormalizer):**
+
+> def **__init__(threshold=0.7, num_perm=128, shingles=3):**
+
+|value|type|function|
+|:-------------|:------:|:---------------|
+|threshold|float|Sets how strictly to measure similarity between sentences.|
+|num_perm|int|Sets the length of the hash function. If set too long, the speed slows down, and if set too short, performance decreases.|
+|shingles|int|Sets how finely the corpus is split. A lower value splits it more finely.|
+
+> def **apply(text):**
+
+|value|type|function|
+|:-------------|:------:|:---------------|
+|text|str|Receives the text to filter.|
+
+> **Return value**
+```Python
+return bool
+```
+
+---
+
+class **PPLFilter(BaseNormalizer):**
+
+> def **__init__(ppl_threshold=180.0):**
+
+|value|type|function|
+|:-------------|:------:|:---------------|
+|ppl_threshold|float|Determines how high the level of bewilderment must be to filter. The appropriate value varies depending on the type of data.|
+
+> def **apply(text):**
 
 |value|type|function|
 |:-------------|:------:|:---------------|
