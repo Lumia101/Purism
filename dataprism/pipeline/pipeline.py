@@ -1,8 +1,8 @@
 # Import all created Python codes from this repository
-from normalizers.normalizer import TextCleaner, UICleaner, UnicodeCleaner
-from filters.simple_filter import LengthFilter, HarmfulWordsFilter, SpamWordsFilter, SignAbuseFilter, PIIFilter
-from filters.advanced_filter import LanguageFilter
-from filters.model_filter import PPLFilter
+from .normalizers.normalizer import TextCleaner, UICleaner, UnicodeCleaner
+from .filters.simple_filter import LengthFilter, HarmfulWordsFilter, SpamWordsFilter, SignAbuseFilter, PIIFilter
+from .filters.advanced_filter import LanguageFilter
+from .filters.model_filter import PPLFilter
 
 # Setting Settings for Data Purification
 class PurifyConfig():
