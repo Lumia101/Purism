@@ -13,8 +13,12 @@ This repository is an automatic data filtering library specialized in Korean dat
   * ~~Sign Abusing Filter~~
   * ~~PII Filter~~
   * ~~Spam Filter~~
-  * Main API
   * ~~Language Filter via Lingua~~
   * ~~Dedup Filter~~
   * ~~Perplexity Score Filter~~
-  * Wrapping with a Python library
+
+* v 1.1.0
+  * Add Multiprocessing
+ 
+# How to use
+Coming soon...
