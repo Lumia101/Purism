@@ -3,7 +3,7 @@ requires = ["setuptools>=82.0.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "dataprism"
+name = "purism"
 version = "1.0.0"
 description = "Automatic data filtering library specialized in Korean data purification"
 authors = [
@@ -21,10 +21,10 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/Lumia101/DataPrism/tree/main"
+"Homepage" = "https://github.com/Lumia101/purism/tree/main"
 
 [tool.setuptools.packages.find]
 where = ["."]
 
 [tool.setuptools.package-data]
-"dataprism.resources" = ["*.txt"]
+"purism.resources" = ["*.txt"]
