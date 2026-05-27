@@ -1,6 +1,6 @@
-from .filters.simple_filter import LengthFilter, HarmfulWordsFilter, SpamWordsFilter, SignAbuseFilter, PIIFilter
-from .filters.advanced_filter import LanguageFilter, DedupFilter
-from .filters.model_filter import PPLFilter
+from .simple_filter import LengthFilter, HarmfulWordsFilter, SpamWordsFilter, SignAbuseFilter, PIIFilter
+from .advanced_filter import LanguageFilter, DedupFilter
+from .model_filter import PPLFilter
 
 __all__ = [
     "LengthFilter", "HarmfulWordsFilter", "SpamWordsFilter", "SignAbuseFilter", 
