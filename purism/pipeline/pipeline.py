@@ -1,8 +1,8 @@
 # Import all created Python codes from this repository
-from dataprism.normalizers.normalizer import TextCleaner, UICleaner, UnicodeCleaner
-from dataprism.filters.simple_filter import LengthFilter, HarmfulWordsFilter, SpamWordsFilter, SignAbuseFilter, PIIFilter
-from dataprism.filters.advanced_filter import LanguageFilter
-from dataprism.filters.model_filter import PPLFilter
+from purism.normalizers.normalizer import TextCleaner, UICleaner, UnicodeCleaner
+from purism.filters.simple_filter import LengthFilter, HarmfulWordsFilter, SpamWordsFilter, SignAbuseFilter, PIIFilter
+from purism.filters.advanced_filter import LanguageFilter
+from purism.filters.model_filter import PPLFilter
 
 # Setting Settings for Data Purification
 class PurifyConfig():
