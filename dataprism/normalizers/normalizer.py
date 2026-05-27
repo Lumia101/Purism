@@ -1,5 +1,5 @@
 # Load libraries
-from .normalizers.base_normalizer import BaseNormalizer
+from .base_normalizer import BaseNormalizer
 import re
 import unicodedata
 import html
