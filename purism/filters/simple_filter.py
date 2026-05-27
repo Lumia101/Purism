@@ -18,8 +18,8 @@ class LengthFilter(BaseFilter):
 # Remove any inappropriate words
 # You can customize settings by editing the .txt file.
 class HarmfulWordsFilter(BaseFilter):
-    def __init__(self, threshold=4):
-        self.filepath = files("dataprism.resources").joinpath(
+    def __init__(self, threshold=5):
+        self.filepath = files("purism.resources").joinpath(
             "harmful_words.txt"
         )
         self.pattern = self.load_and_compile()
@@ -42,37 +42,6 @@ class HarmfulWordsFilter(BaseFilter):
             return False
 
         # Detects and stops only a set number of times for speed
-        count = 0
-        for _ in self.pattern.finditer(text):
-            count += 1
-            if count >= self.threshold:
-                return False
-        return True
-
-# It is virtually identical to HarmfulWordsFilter.
-# However, it is used to prevent errors and accidental mistakes.
-class SpamWordsFilter(BaseFilter):
-    def __init__(self, threshold=8):
-        self.filepath = files("dataprism.resources").joinpath(
-            "spam_words.txt"
-        )
-        self.pattern = self.load_and_compile()
-        self.threshold = threshold
-
-    def load_and_compile(self):
-        with open(self.filepath, 'r', encoding='utf-8') as f:
-            words = sorted(list(set(line.strip() for line in f if line.strip())), key=len, reverse=True)
-
-        if not words:
-            raise ValueError("It seems the list of forbidden words is empty.")
-
-        combined_pattern = '|'.join(map(re.escape, words))
-        return re.compile(combined_pattern)
-
-    def apply(self, text: str):
-        if not self.pattern:
-            return False
-
         count = 0
         for _ in self.pattern.finditer(text):
             count += 1
