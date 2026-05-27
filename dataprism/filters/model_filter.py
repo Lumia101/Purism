@@ -1,6 +1,6 @@
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
-from .filters.base_filter import BaseFilter
+from .base_filter import BaseFilter
 
 class PPLFilter(BaseFilter):
     def __init__(self, ppl_threshold=180.0):
