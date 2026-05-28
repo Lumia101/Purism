@@ -14,3 +14,9 @@
 
 ## Filters
 * Fixed an issue where an error occurred when calling DedupFilter.
+
+# v1.0.2
+> Bug fixes
+
+## Normalizers
+* Fixed an issue where only one normalization command was applied at a time.

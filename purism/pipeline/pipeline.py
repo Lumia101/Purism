@@ -11,8 +11,9 @@ class PurifyConfig():
         self.filters = filters
 
     def purify(self, text: str):
+        text_cleaned = text
         for normalizer in self.normalizer:
-            text_cleaned = normalizer.normalize(text)
+            text_cleaned = normalizer.normalize(text_cleaned)
 
         for filter in self.filters:
             if not filter.apply(text_cleaned):
