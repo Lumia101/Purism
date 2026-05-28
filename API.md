@@ -15,13 +15,15 @@ class **PurifyConfig():**
 |:-------------|:------:|:---------------|
 |text|str|Receives the text to apply filtering.|
 
+Apply the normalization techniques and filters installed in PurifyConfig.
+
 > **Return value**
 ```Python
 return {
-    "raw_text": str,
-    "passed": bool,
-    "filtered_by": Filter name(str) or None,
-    "normalized_text": str
+    "raw_text": str, # Document that was entered
+    "passed": bool, # Returns False for harmful document and True for harmless documents.
+    "filtered_by": str or None, # Returns a filter that filters the input document, and returns None if "passed" is true.
+    "normalized_text": str # Document after normalization from "raw_text"
 }
 ```
 
@@ -53,9 +55,11 @@ class **UnicodeCleaner(BaseNormalizer):**
 |:-------------|:------:|:---------------|
 |text|str|Receives the text to normalize.|
 
+This command performs Unicode-based normalization.
+
 > **Return value**
 ```Python
-return str
+return str # Returns the document after Unicode-based normalization.
 ```
 
 ---
@@ -70,9 +74,11 @@ class **UICleaner(BaseNormalizer):**
 |:-------------|:------:|:---------------|
 |text|str|Receives the text to normalize.|
 
+This command removes debris, such as HTML code, that interferes with AI learning.
+
 > **Return value**
 ```Python
-return str
+return str # Returns document with debris such as HTML code removed
 ```
 
 ---
@@ -87,9 +93,11 @@ class **TextCleaner(BaseNormalizer):**
 |:-------------|:------:|:---------------|
 |text|str|Receives the text to normalize.|
 
+This command corrects characters that are repeated too many times or broken characters.
+
 > **Return value**
 ```Python
-return str
+return str # Returns a document with reduced use of duplicate characters and broken characters removed.
 ```
 
 # Filters
@@ -121,9 +129,11 @@ class **LengthFilter(BaseFilter):**
 |:-------------|:------:|:---------------|
 |text|str|Receives the text to filter.|
 
+This command filters documents that exceed the set character count range.
+
 > **Return value**
 ```Python
-return bool
+return bool # Returns False if the text length is outside the set range, otherwise True.
 ```
 
 ---
@@ -142,9 +152,12 @@ class **HarmfulWordsFilter(BaseNormalizer):**
 |:-------------|:------:|:---------------|
 |text|str|Receives the text to filter.|
 
+This command filters documents containing more than a set number of harmful words.
+(You can check the harmful words [here](https://github.com/Lumia101/Purism/blob/main/purism/resources/harmful_words.txt). If you think I missed any words, please contact the developer.)
+
 > **Return value**
 ```Python
-return bool
+return bool # Returns False if harmful words are used more than the set value, and True otherwise.
 ```
 
 ---
@@ -163,9 +176,12 @@ class **SpamWordsFilter(BaseNormalizer):**
 |:-------------|:------:|:---------------|
 |text|str|Receives the text to filter.|
 
+This command filters documents where words commonly found in spam documents appear above a set value.
+(You can check the spam words [here](https://github.com/Lumia101/Purism/blob/main/purism/resources/spam_words.txt). If you think I missed any words, please contact the developer.)
+
 > **Return value**
 ```Python
-return bool
+return bool # Returns False if spam words are used more than the set value, and True otherwise.
 ```
 
 ---
@@ -184,9 +200,11 @@ class **SignAbuseFilter(BaseNormalizer):**
 |:-------------|:------:|:---------------|
 |text|str|Receives the text to filter.|
 
+This command filters documents that use an excessive amount of symbols.
+
 > **Return value**
 ```Python
-return bool
+return bool # Returns False if the number of symbols used relative to the length of the entire document exceeds the set level, otherwise True.
 ```
 
 ---
@@ -201,9 +219,11 @@ class **PIIFilter(BaseNormalizer):**
 |:-------------|:------:|:---------------|
 |text|str|Receives the text to filter.|
 
+This command filters documents containing important personal information.
+
 > **Return value**
 ```Python
-return bool
+return bool # Returns False if the document contains personal information, otherwise True.
 ```
 
 ---
@@ -222,9 +242,11 @@ class **LanguageFilter(BaseNormalizer):**
 |:-------------|:------:|:---------------|
 |text|str|Receives the text to filter.|
 
+This command filters non-Korean documents.
+
 > **Return value**
 ```Python
-return bool
+return bool # Returns False if the reading result indicates that it is not Korean, otherwise returns True.
 ```
 
 ---
@@ -245,9 +267,11 @@ class **DedupFilter(BaseNormalizer):**
 |:-------------|:------:|:---------------|
 |text|str|Receives the text to filter.|
 
+This command filters duplicate documents within the data.
+
 > **Return value**
 ```Python
-return bool
+return bool # Returns False if a document with similar content already exists, otherwise True.
 ```
 
 ---
@@ -266,7 +290,9 @@ class **PPLFilter(BaseNormalizer):**
 |:-------------|:------:|:---------------|
 |text|str|Receives the text to filter.|
 
+This command filters documents where the sentence's perplexity is above a certain value.
+
 > **Return value**
 ```Python
-return bool
+return bool # Returns False if the perplexity measurement result is greater than or equal to the set value, otherwise True.
 ```
