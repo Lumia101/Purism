@@ -1,6 +1,8 @@
 # Purism: Automatic data filtering library specialized in Korean data purification
 > **Puri**fy **s**yste**m**
 
+[View in Korean](https://github.com/Lumia101/Purism/blob/main/KO_README.md)
+
 ## Summary
 This repository is an automatic data filtering library specialized in Korean data purification.
  
