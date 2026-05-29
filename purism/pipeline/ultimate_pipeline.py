@@ -1,8 +1,5 @@
 # Import all created Python codes from this repository
-import multiprocessing
-from concurrent.futures import ProcessPoolExecutor
-from typing import List, Dict, Any
-from functools import partial
+from joblib import Parallel, delayed
 from purism.normalizers.normalizer import TextCleaner, UICleaner, UnicodeCleaner
 from purism.filters.simple_filter import LengthFilter, HarmfulWordsFilter, SpamWordsFilter, SignAbuseFilter, PIIFilter
 from purism.filters.advanced_filter import LanguageFilter, DedupFilter
@@ -14,40 +11,60 @@ class PurifyConfig():
         self.normalizer = normalizer
         self.filter_cpu = filter_cpu
         self.filter_gpu = filter_gpu
-
-    def normalize(self, text: str):
+    
+    def fast_purify(self, text: str):
         text_cleaned = text
         for normalizer in self.normalizer:
             text_cleaned = normalizer.normalize(text_cleaned)
-
-    def purify(self, text: list):
-        for filter in self.filters:
-            if not filter.apply(text_cleaned):
+        
+        for flt in self.filter_cpu:
+            if not flt.apply(text_cleaned):
                 return {
                     "raw_text": text,
                     "passed": False,
-                    "filtered_by": filter.__class__.__name__,
-                    "normalized_text": text_cleaned
+                    "filtered_by": flt.__class__.__name__,
+                    "text": text_cleaned
                 }
 
         return {
             "raw_text": text,
             "passed": True,
             "filtered_by": None,
-            "normalized_text": text_cleaned
+            "text": text_cleaned
         }
 
-    def multi_purify(self, texts: list, n_process=-1, chunk_size=100):
-        if n_process == -1:
-            n_workers = multiprocessing.cpu_count()
-        elif n_process = 0:
-            n_workers = 1
-        elif n_process > 0:
-            n_workers = n_process
-        else:
-            raise ValueError("An invalid value was entered into n_process. ")
+    def heavy_purify(self, text: str):
+        text_cleaned = text
+        for normalizer in self.normalizer:
+            text_cleaned = normalizer.normalize(text_cleaned)
         
-        with ProcessPoolExecutor(max_workers=n_workers) as executor:
-            results = list(executor.map(self.purify, texts, chunksize=chunksize))
-        
-        return results
+        for flt in self.filter_gpu:
+            if not flt.apply(text_cleaned):
+                return {
+                    "raw_text": text,
+                    "passed": False,
+                    "filtered_by": flt.__class__.__name__,
+                    "text": text_cleaned
+                }
+
+        return {
+            "raw_text": text,
+            "passed": True,
+            "filtered_by": None,
+            "text": text_cleaned
+        }
+
+    def parallel_purify(self, texts: list, n_process: int):
+        final_results = []
+        parallel = Parallel(n_jobs=n_process)
+        fast_results = parallel(
+            delayed(self.fast_purify)(text) for text in texts
+        )
+
+        for text in fast_results:
+            if text["passed"]:
+                final_results.append(self.heavy_purify(text["text"]))
+            else:
+                final_results.append(text)
+    
+        return final_results
