@@ -58,7 +58,7 @@ class PurifyConfig():
             delayed(self.multi_purify)(text) for text in pbar1
         )
 
-        pbar2 = tqdm(fast_results, desc="Applying Batch filter", total=total)
+        pbar2 = tqdm(fast_results, desc="Applying Normal filter", total=total)
         
         for text in pbar2:
             if text["passed"]:
@@ -74,10 +74,10 @@ class PurifyConfig():
 
             yield text_p
             
-            if total > 0:
+            if n_filtered_multi + n_filtered_normal + n_passed > 0:
                 pbar2.set_postfix({
                     "passed": n_passed, 
                     "normal_filtered": n_filtered_normal,
                     "multi_filtered": n_filtered_multi,
-                    "ratio": f"{(n_filtered_multi + n_filtered_normal) / total * 100:.3f}%"
+                    "ratio": f"{(n_filtered_multi + n_filtered_normal) / (n_filtered_multi + n_filtered_normal + n_passed) * 100:.3f}%"
                 })

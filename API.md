@@ -1,6 +1,6 @@
 # Pipeline
 
-class **PurifyConfig():**
+## class **PurifyConfig():**
 
 > def **__init__(normalizer, filter_multi, filter_normal):**
 > 
@@ -20,7 +20,7 @@ Apply normalizations and the filters entered into filter_multi.
 
 > **Return value**
 ```Python
-return {
+{
     "passed": bool, # Returns False for harmful document and True for harmless documents.
     "filtered_by": str or None, # Returns a filter that filters the input document, and returns None if "passed" is true.
     "text": str # Document after normalization from "raw_text"
@@ -37,7 +37,7 @@ Apply the filters entered into filter_batch.
 
 > **Return value**
 ```Python
-return {
+{
     "passed": bool, # Returns False for harmful document and True for harmless documents.
     "filtered_by": str or None, # Returns a filter that filters the input document, and returns None if "passed" is true.
     "text": str # Document after normalization from "raw_text"
@@ -55,16 +55,16 @@ Rapidly apply normalization and filters through multi-core processing.
 
 > **Return value**
 ```Python
-return [{
+({
     "passed": bool, # Returns False for harmful document and True for harmless documents.
     "filtered_by": str or None, # Returns a filter that filters the input document, and returns None if "passed" is true.
     "text": str # Document after normalization from "raw_text"
-}]
+})
 ```
 
 # Normalizers
 
-class **BaseNormalizer(ABC):**
+## class **BaseNormalizer(ABC):**
 
 > def **normalize(text):**
 
@@ -76,7 +76,7 @@ The base class for all normalization classes.
 
 ---
 
-class **UnicodeCleaner(BaseNormalizer):**
+## class **UnicodeCleaner(BaseNormalizer):**
 
 > def **__init__(type="NFC"):**
 
@@ -94,12 +94,12 @@ This command performs Unicode-based normalization.
 
 > **Return value**
 ```Python
-return str # Returns the document after Unicode-based normalization.
+str # Returns the document after Unicode-based normalization.
 ```
 
 ---
 
-class **UICleaner(BaseNormalizer):**
+## class **UICleaner(BaseNormalizer):**
 
 > def **__init__():**
 
@@ -113,12 +113,12 @@ This command removes debris, such as HTML code, that interferes with AI learning
 
 > **Return value**
 ```Python
-return str # Returns document with debris such as HTML code removed
+str # Returns document with debris such as HTML code removed
 ```
 
 ---
 
-class **TextCleaner(BaseNormalizer):**
+## class **TextCleaner(BaseNormalizer):**
 
 > def **__init__():**
 
@@ -132,12 +132,12 @@ This command corrects characters that are repeated too many times or broken char
 
 > **Return value**
 ```Python
-return str # Returns a document with reduced use of duplicate characters and broken characters removed.
+str # Returns a document with reduced use of duplicate characters and broken characters removed.
 ```
 
 # Filters
 
-class **BaseFilter(ABC):**
+## class **BaseFilter(ABC):**
 
 > def **apply(text):**
 
@@ -149,7 +149,7 @@ The base class for all filter classes.
 
 ---
 
-class **LengthFilter(BaseFilter):**
+## class **LengthFilter(BaseFilter):**
 
 > def **__init__(min_len=50, max_len=10000):**
 
@@ -168,12 +168,12 @@ This command filters documents that exceed the set character count range.
 
 > **Return value**
 ```Python
-return bool # Returns False if the text length is outside the set range, otherwise True.
+bool # Returns False if the text length is outside the set range, otherwise True.
 ```
 
 ---
 
-class **HarmfulWordsFilter(BaseFliter):**
+## class **HarmfulWordsFilter(BaseFliter):**
 
 > def **__init__(threshold=5):**
 
@@ -192,12 +192,12 @@ This command filters documents containing more than a set number of harmful word
 
 > **Return value**
 ```Python
-return bool # Returns False if harmful words are used more than the set value, and True otherwise.
+bool # Returns False if harmful words are used more than the set value, and True otherwise.
 ```
 
 ---
 
-class **SpamWordsFilter(BaseFilter):**
+## class **SpamWordsFilter(BaseFilter):**
 
 > def **__init__(threshold=8):**
 
@@ -216,12 +216,12 @@ This command filters documents where words commonly found in spam documents appe
 
 > **Return value**
 ```Python
-return bool # Returns False if spam words are used more than the set value, and True otherwise.
+bool # Returns False if spam words are used more than the set value, and True otherwise.
 ```
 
 ---
 
-class **SignAbuseFilter(BaseFilter):**
+## class **SignAbuseFilter(BaseFilter):**
 
 > def **__init__(threshold=0.3):**
 
@@ -239,12 +239,12 @@ This command filters documents that use an excessive amount of symbols.
 
 > **Return value**
 ```Python
-return bool # Returns False if the number of symbols used relative to the length of the entire document exceeds the set level, otherwise True.
+bool # Returns False if the number of symbols used relative to the length of the entire document exceeds the set level, otherwise True.
 ```
 
 ---
 
-class **PIIFilter(BaseFilter):**
+## class **PIIFilter(BaseFilter):**
 
 > def **__init__():**
 
@@ -258,12 +258,12 @@ This command filters documents containing important personal information.
 
 > **Return value**
 ```Python
-return bool # Returns False if the document contains personal information, otherwise True.
+bool # Returns False if the document contains personal information, otherwise True.
 ```
 
 ---
 
-class **LanguageFilter(BaseFilter):**
+## class **LanguageFilter(BaseFilter):**
 
 > def **__init__(threshold=0.6):**
 
@@ -281,12 +281,12 @@ This command filters non-Korean documents.
 
 > **Return value**
 ```Python
-return bool # Returns False if the reading result indicates that it is not Korean, otherwise returns True.
+bool # Returns False if the reading result indicates that it is not Korean, otherwise returns True.
 ```
 
 ---
 
-class **DedupFilter(BaseFilter):**
+## class **DedupFilter(BaseFilter):**
 
 > def **__init__(threshold=0.7, num_perm=128, shingles=3):**
 
@@ -306,12 +306,12 @@ This command filters duplicate documents within the data.
 
 > **Return value**
 ```Python
-return bool # Returns False if a document with similar content already exists, otherwise True.
+bool # Returns False if a document with similar content already exists, otherwise True.
 ```
 
 ---
 
-class **PPLFilter(BaseFilter):**
+## class **PPLFilter(BaseFilter):**
 
 > def **__init__(ppl_threshold=180.0):**
 
@@ -329,5 +329,5 @@ This command filters documents where the sentence's perplexity is above a certai
 
 > **Return value**
 ```Python
-return bool # Returns False if the perplexity measurement result is greater than or equal to the set value, otherwise True.
+bool # Returns False if the perplexity measurement result is greater than or equal to the set value, otherwise True.
 ```
