@@ -2,21 +2,21 @@
 
 class **PurifyConfig():**
 
-> def **__init__(normalizer, filter_cpu, filter_gpu):**
+> def **__init__(normalizer, filter_multi, filter_normal):**
 > 
 |value|type|function|
 |:-------------|:------:|:---------------|
 |normalizer|list|Receive a list of normalization techniques to apply.|
-|filter_cpu|list|Receive light filters that can be processed using only the CPU among the filters to be applied.|
-|filter_gpu|list|Receive heavy filters that require GPUs among the filters to be applied.|
+|filter_multi|list|Receives filters capable of multicore processing.|
+|filter_normal|list|Receives filters that cannot be processed by multicore processing.|
 
-> def **fast_purify(text):**
+> def **multi_purify(text):**
 
 |value|type|function|
 |:-------------|:------:|:---------------|
 |text|str|Receives the text to apply filtering.|
 
-Apply normalizations and the filters entered into filter_cpu.
+Apply normalizations and the filters entered into filter_multi.
 
 > **Return value**
 ```Python
@@ -27,13 +27,13 @@ return {
 }
 ```
 
-> def **heavy_purify(text):**
+> def **normal_purify(text):**
 
 |value|type|function|
 |:-------------|:------:|:---------------|
 |text|str|Receives the text to apply filtering.|
 
-Apply the filters entered into filter_gpu.
+Apply the filters entered into filter_batch.
 
 > **Return value**
 ```Python
@@ -173,7 +173,7 @@ return bool # Returns False if the text length is outside the set range, otherwi
 
 ---
 
-class **HarmfulWordsFilter(BaseNormalizer):**
+class **HarmfulWordsFilter(BaseFliter):**
 
 > def **__init__(threshold=5):**
 
@@ -197,7 +197,7 @@ return bool # Returns False if harmful words are used more than the set value, a
 
 ---
 
-class **SpamWordsFilter(BaseNormalizer):**
+class **SpamWordsFilter(BaseFilter):**
 
 > def **__init__(threshold=8):**
 
@@ -221,7 +221,7 @@ return bool # Returns False if spam words are used more than the set value, and 
 
 ---
 
-class **SignAbuseFilter(BaseNormalizer):**
+class **SignAbuseFilter(BaseFilter):**
 
 > def **__init__(threshold=0.3):**
 
@@ -244,7 +244,7 @@ return bool # Returns False if the number of symbols used relative to the length
 
 ---
 
-class **PIIFilter(BaseNormalizer):**
+class **PIIFilter(BaseFilter):**
 
 > def **__init__():**
 
@@ -263,7 +263,7 @@ return bool # Returns False if the document contains personal information, other
 
 ---
 
-class **LanguageFilter(BaseNormalizer):**
+class **LanguageFilter(BaseFilter):**
 
 > def **__init__(threshold=0.6):**
 
@@ -286,7 +286,7 @@ return bool # Returns False if the reading result indicates that it is not Korea
 
 ---
 
-class **DedupFilter(BaseNormalizer):**
+class **DedupFilter(BaseFilter):**
 
 > def **__init__(threshold=0.7, num_perm=128, shingles=3):**
 
@@ -311,7 +311,7 @@ return bool # Returns False if a document with similar content already exists, o
 
 ---
 
-class **PPLFilter(BaseNormalizer):**
+class **PPLFilter(BaseFilter):**
 
 > def **__init__(ppl_threshold=180.0):**
 
