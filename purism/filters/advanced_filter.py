@@ -112,7 +112,7 @@ class PPLFilter(BaseFilter):
             self.model.eval()
 
         if self.tokenizer is None:
-            self.tokenizer = AutoTokenizer.from_pretrained(model_id)
+            self.tokenizer = AutoTokenizer.from_pretrained(self.model_id)
 
     def compute_ppl(self, text: str):
         device = next(

@@ -76,7 +76,7 @@ class PurifyConfig():
             if total > 0:
                 pbar.set_postfix({
                     "passed": n_passed, 
-                    "batch_filtered": n_filtered_normal,
+                    "normal_filtered": n_filtered_normal,
                     "multi_filtered": n_filtered_multi,
                     "ratio": f"{(n_filtered_multi + n_filtered_normal) / total * 100:.3f}%"
                 })
