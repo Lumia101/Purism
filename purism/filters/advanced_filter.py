@@ -7,15 +7,21 @@ from .base_filter import BaseFilter
 # Use the lingua library to remove non-Korean sentences
 class LanguageFilter(BaseFilter):
     def __init__(self, threshold=0.6):
-        self.judge = LanguageDetectorBuilder.from_languages(
-            Language.KOREAN,
-            Language.JAPANESE,
-            Language.CHINESE, 
-            Language.ENGLISH
-        ).build()
+        self.judge = None
         self.threshold = threshold
 
+    def load_judge(self):
+        if self.judge is None:
+            self.judge = LanguageDetectorBuilder.from_languages(
+                Language.KOREAN,
+                Language.JAPANESE,
+                Language.CHINESE, 
+                Language.ENGLISH,
+                Language.FRENCH
+            ).build()
+
     def apply(self, text: str):
+        self.load_judge()
         match = self.judge.compute_language_confidence(text, Language.KOREAN)
 
         if match is None:
