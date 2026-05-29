@@ -4,3 +4,5 @@ datasketch[redis]
 transformers
 bitsandbytes
 torch
+tqdm
+joblib

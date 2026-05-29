@@ -21,7 +21,7 @@
 ## Normalizers
 * Fixed an issue where only one normalization command was applied at a time.
 
-# v2.0.0
+# v1.1.0
 > Improved processing speed through multi-core processing
 
 ## Pipeline
