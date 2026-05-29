@@ -21,16 +21,14 @@
 ## Normalizers
 * Fixed an issue where only one normalization command was applied at a time.
 
-# v1.1.0
+# v2.0.0
 > Improved processing speed through multi-core processing
 
 ## Pipeline
 * Changes to function names and additions to features in PurifyConfig
   * Added parallel_purify function
-    * You can perform multi-core processing with this single instruction.
-  * Separate the purify function into fast_purify and heavy_purify.
-    * heavy_purify recommends using a GPU.
+    * You can perform multi-core processing with this command.
+  * Separate the purify function into multi_purify and normal_purify.
 
 ## Filter
-* Adjust to prevent memory usage from skyrocketing due to multi-core processing
-  * Due to this, PPLFilter does not support multi-core processing.
+* Modified various filter logics to suit the multiprocessing environment.
