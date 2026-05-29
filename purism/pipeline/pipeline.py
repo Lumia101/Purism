@@ -12,7 +12,7 @@ class PurifyConfig():
         self.normalizer = normalizer
         self.filter_cpu = filter_cpu
         self.filter_gpu = filter_gpu
-    
+
     def fast_purify(self, text: str):
         text_cleaned = text
         for normalizer in self.normalizer:
@@ -49,46 +49,37 @@ class PurifyConfig():
 
     def parallel_purify(self, texts: list, n_process=-1):
         n_passed = 0
-        n_filtered = 0
-        with tqdm(texts, desc="Applying fast filter", total=len(texts), unit="texts") as pbar_cpu:
-            def fast_purify_trace(text):
-                result = self.fast_purify(text)
-                if result["passed"]:
-                    n_passed += 1
-                else:
-                    n_filtered += 1
-                pbar_cpu.update(1)
-                pbar_cpu.set_postfix({
-                    "passed": n_passed,
-                    "filtered": n_filtered,
-                    "filtered_ratio": f"{n_filtered / (n_passed + n_filtered) * 100:.3f}%"
-                })
-                return result
+        n_filtered_cpu = 0
+        n_filtered_gpu = 0
+        final_results = []
 
-        parallel = Parallel(n_jobs=n_process)
-        fast_results = parallel(
-            delayed(fast_purify_trace)(text) for text in texts
+        fast_results = Parallel(n_jobs=n_process)(
+            delayed(self.fast_purify)(text) for text in tqdm(texts, desc="Applying fast filter", unit="texts")
         )
 
-        n_remain = n_passed
-        n_passed = 0
-        n_filtered = 0
-
-        pbar_gpu = tqdm(fast_results, desc="Applying heavy filter", total=n_remain, unit="texts")
-
-        for text in pbar_gpu:
+        pbar = tqdm(fast_results, desc="Applying heavy filter", unit="texts")
+        
+        for text in pbar:
             if text["passed"]:
-                final_results.append(self.heavy_purify(text["text"]))
-                n_passed += 1
+                text_p = self.heavy_purify(text["text"])
+                final_results.append(text_p)
+
+                if text_p["passed"]:
+                    n_passed += 1
+                else:
+                    n_filtered_gpu += 1
             else:
                 final_results.append(text)
-                n_filtered += 1
+                n_filtered_cpu += 1
 
-            pbar_gpu.update(1)
-            pbar_gpu.set_postfix({
-                "passed": n_passed,
-                "filtered": n_filtered,
-                "filtered_ratio": f"{n_filtered / (n_passed + n_filtered) * 100:.3f}%"
-            })
+            total = len(texts)
+            
+            if total > 0:
+                pbar.set_postfix({
+                    "passed": n_passed, 
+                    "gpu_filtered": n_filtered_gpu,
+                    "cpu_filtered": n_filtered_cpu,
+                    "ratio": f"{(n_filtered_cpu + n_filtered_gpu) / total * 100:.3f}%"
+                })
     
-        return final_result
+        return final_results
