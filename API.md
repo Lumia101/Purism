@@ -2,29 +2,64 @@
 
 class **PurifyConfig():**
 
-> def **__init__(filters, normalizer):**
+> def **__init__(normalizer, filter_cpu, filter_gpu):**
 > 
 |value|type|function|
 |:-------------|:------:|:---------------|
-|filters|list|Receive a list of filters to apply.|
 |normalizer|list|Receive a list of normalization techniques to apply.|
+|filter_cpu|list|Receive light filters that can be processed using only the CPU among the filters to be applied.|
+|filter_gpu|list|Receive heavy filters that require GPUs among the filters to be applied.|
 
-> def **purify(text):**
+> def **fast_purify(text):**
 
 |value|type|function|
 |:-------------|:------:|:---------------|
 |text|str|Receives the text to apply filtering.|
 
-Apply the normalization techniques and filters installed in PurifyConfig.
+Apply normalizations and the filters entered into filter_cpu.
 
 > **Return value**
 ```Python
 return {
-    "raw_text": str, # Document that was entered
     "passed": bool, # Returns False for harmful document and True for harmless documents.
     "filtered_by": str or None, # Returns a filter that filters the input document, and returns None if "passed" is true.
-    "normalized_text": str # Document after normalization from "raw_text"
+    "text": str # Document after normalization from "raw_text"
 }
+```
+
+> def **heavy_purify(text):**
+
+|value|type|function|
+|:-------------|:------:|:---------------|
+|text|str|Receives the text to apply filtering.|
+
+Apply the filters entered into filter_gpu.
+
+> **Return value**
+```Python
+return {
+    "passed": bool, # Returns False for harmful document and True for harmless documents.
+    "filtered_by": str or None, # Returns a filter that filters the input document, and returns None if "passed" is true.
+    "text": str # Document after normalization from "raw_text"
+}
+```
+
+> def **parallel_purify(texts, n_process):**
+
+|value|type|function|
+|:-------------|:------:|:---------------|
+|texts|list|Receives the texts to apply filtering.|
+|n_process|int|Receive the number of cores to use.|
+
+Rapidly apply normalization and filters through multi-core processing.
+
+> **Return value**
+```Python
+return [{
+    "passed": bool, # Returns False for harmful document and True for harmless documents.
+    "filtered_by": str or None, # Returns a filter that filters the input document, and returns None if "passed" is true.
+    "text": str # Document after normalization from "raw_text"
+}]
 ```
 
 # Normalizers
