@@ -20,41 +20,33 @@ class PurifyConfig():
         for flt in self.filter_cpu:
             if not flt.apply(text_cleaned):
                 return {
-                    "raw_text": text,
                     "passed": False,
                     "filtered_by": flt.__class__.__name__,
                     "text": text_cleaned
                 }
 
         return {
-            "raw_text": text,
             "passed": True,
             "filtered_by": None,
             "text": text_cleaned
         }
 
     def heavy_purify(self, text: str):
-        text_cleaned = text
-        for normalizer in self.normalizer:
-            text_cleaned = normalizer.normalize(text_cleaned)
-        
         for flt in self.filter_gpu:
-            if not flt.apply(text_cleaned):
+            if not flt.apply(text):
                 return {
-                    "raw_text": text,
                     "passed": False,
                     "filtered_by": flt.__class__.__name__,
-                    "text": text_cleaned
+                    "text": text
                 }
 
         return {
-            "raw_text": text,
             "passed": True,
             "filtered_by": None,
-            "text": text_cleaned
+            "text": text
         }
 
-    def parallel_purify(self, texts: list, n_process: int):
+    def parallel_purify(self, texts: list, n_process=-1):
         final_results = []
         parallel = Parallel(n_jobs=n_process)
         fast_results = parallel(
