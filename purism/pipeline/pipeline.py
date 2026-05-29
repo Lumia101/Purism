@@ -50,35 +50,34 @@ class PurifyConfig():
         n_passed = 0
         n_filtered_multi = 0
         n_filtered_normal = 0
-        final_results = []
+        total = len(texts)
 
-        fast_results = Parallel(n_jobs=n_process)(
-            delayed(self.multi_purify)(text) for text in tqdm(texts, desc="Applying MultiCore filter", unit="texts")
+        pbar1 = tqdm(texts, desc="Applying MultiCore filter", total=total)
+
+        fast_results = Parallel(n_jobs=n_process, backend="threading", return_as="generator")(
+            delayed(self.multi_purify)(text) for text in pbar1
         )
 
-        pbar = tqdm(fast_results, desc="Applying Batch filter", unit="texts")
+        pbar2 = tqdm(fast_results, desc="Applying Batch filter", total=total)
         
-        for text in pbar:
+        for text in pbar2:
             if text["passed"]:
                 text_p = self.normal_purify(text["text"])
-                final_results.append(text_p)
 
                 if text_p["passed"]:
                     n_passed += 1
                 else:
                     n_filtered_normal += 1
             else:
-                final_results.append(text)
-                n_filtered_normal += 1
+                text_p = text
+                n_filtered_multi += 1
 
-            total = len(texts)
+            yield text_p
             
             if total > 0:
-                pbar.set_postfix({
+                pbar2.set_postfix({
                     "passed": n_passed, 
                     "normal_filtered": n_filtered_normal,
                     "multi_filtered": n_filtered_multi,
                     "ratio": f"{(n_filtered_multi + n_filtered_normal) / total * 100:.3f}%"
                 })
-    
-        return final_results
