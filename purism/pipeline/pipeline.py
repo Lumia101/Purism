@@ -8,17 +8,17 @@ from purism.filters.model_filter import PPLFilter
 
 # Setting Settings for Data Purification
 class PurifyConfig():
-    def __init__(self, normalizer, filter_cpu, filter_gpu):
+    def __init__(self, normalizer, filter_multi, filter_batch):
         self.normalizer = normalizer
-        self.filter_cpu = filter_cpu
-        self.filter_gpu = filter_gpu
+        self.filter_multi = filter_multi
+        self.filter_batch = filter_batch
 
-    def fast_purify(self, text: str):
+    def multi_purify(self, text: str):
         text_cleaned = text
         for normalizer in self.normalizer:
             text_cleaned = normalizer.normalize(text_cleaned)
         
-        for flt in self.filter_cpu:
+        for flt in self.filter_multi:
             if not flt.apply(text_cleaned):
                 return {
                     "passed": False,
@@ -32,8 +32,8 @@ class PurifyConfig():
             "text": text_cleaned
         }
 
-    def heavy_purify(self, text: str):
-        for flt in self.filter_gpu:
+    def batch_purify(self, text: str):
+        for flt in self.filter_batch:
             if not flt.apply(text):
                 return {
                     "passed": False,
@@ -49,37 +49,37 @@ class PurifyConfig():
 
     def parallel_purify(self, texts: list, n_process=-1):
         n_passed = 0
-        n_filtered_cpu = 0
-        n_filtered_gpu = 0
+        n_filtered_multi = 0
+        n_filtered_batch = 0
         final_results = []
 
         fast_results = Parallel(n_jobs=n_process)(
-            delayed(self.fast_purify)(text) for text in tqdm(texts, desc="Applying fast filter", unit="texts")
+            delayed(self.multi_purify)(text) for text in tqdm(texts, desc="Applying MultiCore filter", unit="texts")
         )
 
-        pbar = tqdm(fast_results, desc="Applying heavy filter", unit="texts")
+        pbar = tqdm(fast_results, desc="Applying Batch filter", unit="texts")
         
         for text in pbar:
             if text["passed"]:
-                text_p = self.heavy_purify(text["text"])
+                text_p = self.batch_purify(text["text"])
                 final_results.append(text_p)
 
                 if text_p["passed"]:
                     n_passed += 1
                 else:
-                    n_filtered_gpu += 1
+                    n_filtered_batch += 1
             else:
                 final_results.append(text)
-                n_filtered_cpu += 1
+                n_filtered_multi += 1
 
             total = len(texts)
             
             if total > 0:
                 pbar.set_postfix({
                     "passed": n_passed, 
-                    "gpu_filtered": n_filtered_gpu,
-                    "cpu_filtered": n_filtered_cpu,
-                    "ratio": f"{(n_filtered_cpu + n_filtered_gpu) / total * 100:.3f}%"
+                    "batch_filtered": n_filtered_batch,
+                    "multi_filtered": n_filtered_multi,
+                    "ratio": f"{(n_filtered_multi + n_filtered_batch) / total * 100:.3f}%"
                 })
     
         return final_results
