@@ -89,11 +89,12 @@ class DedupFilter(BaseFilter):
 
 # Measure the PPL of corpus and filter corpus with excessively high PPL.
 class PPLFilter(BaseFilter):
-    def __init__(self, ppl_threshold=180.0):
+    def __init__(self, ppl_threshold=180.0, batch_size=16):
         self.model_id = "LiquidAI/LFM2.5-350M"
         self.model = None
         self.tokenizer = None
         self.ppl_threshold = ppl_threshold
+        self.batch_size = batch_size
 
     def load_model(self):
         if self.model is None:
@@ -114,37 +115,54 @@ class PPLFilter(BaseFilter):
         if self.tokenizer is None:
             self.tokenizer = AutoTokenizer.from_pretrained(self.model_id)
 
-    def compute_ppl(self, text: str):
-        device = next(
-            self.model.parameters()
-        ).device
+    def compute_ppl(self, text: list[str]):
+        device = next(self.model.parameters()).device
         enc = self.tokenizer(
             text,
             return_tensors="pt",
+            padding=True,
             truncation=True,
             max_length=512
         ).to(device)
 
+        input_ids = enc["input_ids"]
+        attention_mask = enc["attention_mask"]
+
         with torch.no_grad():
-            output = self.model(
-                **enc,
-                labels=enc["input_ids"]
+            outputs = self.model(
+                input_ids,
+                attention_mask=attention_mask
             )
-            loss = output.loss
+            logits = outputs.logits
 
-        ppl = torch.exp(loss)
-                
-        if torch.isinf(ppl):
-            return float("inf")
+            shift_logits = logits[:, :-1, :].contiguous()
+            shift_labels = enc["input_ids"][:, 1:].contiguous()
+            shift_mask = enc["attention_mask"][:, 1:].contiguous()
+
+            loss_fct = torch.nn.CrossEntropyLoss(reduction="none")
+
+            loss = loss_fct(
+                shift_logits.reshape(
+                    -1,
+                    shift_logits.size(-1)
+                ),
+                shift_labels.reshape(-1)
+            )
+
+            loss = loss.view(shift_labels.size())
+
+            sentence_loss = (loss * shift_mask).sum(dim=1) / shift_mask.sum(dim=1)
+
+        ppl = torch.exp(sentence_loss)
                                                 
-        return ppl.item()
+        return ppl.cpu().tolist()
 
-    def apply(self, text: str):
+    def apply(self, text: list[str]):
         text = text.strip()
         self.load_model()
 
         if len(text) < 10:
             return False
 
-        ppl = self.compute_ppl(text)
-        return ppl <= self.ppl_threshold
+        ppls = self.compute_ppl(text)
+        return [ppl <= self.ppl_threshold for ppl in ppls]
