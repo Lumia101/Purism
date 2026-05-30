@@ -14,7 +14,7 @@ from purism.filters.advanced_filter import LanguageFilter, DedupFilter, PPLFilte
 
 
 # Setting Settings for Data Purification
-class PurifyConfig:
+class PurifyConfig():
     def __init__(self, normalizer, filter_multi, filter_normal, batch_size=16):
         self.normalizer = normalizer
         self.filter_multi = filter_multi
