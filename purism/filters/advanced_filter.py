@@ -184,5 +184,5 @@ class PPLFilter(BaseFilter):
 
         return results
 
-    def apply(self, text: str):
+    def apply(self, text: list[str]):
         return self.apply_batch([text])[0]
