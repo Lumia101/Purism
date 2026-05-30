@@ -161,8 +161,25 @@ class PPLFilter(BaseFilter):
         text = text.strip()
         self.load_model()
 
-        if len(text) < 10:
-            return False
+        valid_texts = []
+        valid_indices = []
+        results = [False] * len(texts)
 
-        ppls = self.compute_ppl(text)
-        return [ppl <= self.ppl_threshold for ppl in ppls]
+        for i, t in enumerate(texts):
+            clean_t = t.strip()
+            if len(clean_t) >= 10:
+                valid_texts.append(clean_t)
+                valid_indices.append(i)
+                                                                                                
+        if not valid_texts:
+            return results
+
+        all_ppls = []
+        for i in range(0, len(valid_texts), self.batch_size):
+            batch_chunk = valid_texts[i : i + self.batch_size]
+            all_ppls.extend(self.compute_ppl(batch_chunk))
+
+        for idx, ppl in zip(valid_indices, all_ppls):
+            results[idx] = ppl <= self.ppl_threshold
+                                    
+        return results

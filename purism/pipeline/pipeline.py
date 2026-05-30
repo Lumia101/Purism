@@ -7,10 +7,11 @@ from purism.filters.advanced_filter import LanguageFilter, DedupFilter, PPLFilte
 
 # Setting Settings for Data Purification
 class PurifyConfig():
-    def __init__(self, normalizer, filter_multi, filter_normal):
+    def __init__(self, normalizer, filter_multi, filter_normal, batch_size=16):
         self.normalizer = normalizer
         self.filter_multi = filter_multi
         self.filter_normal = filter_normal
+        self.batch_size = batch_size
 
     def multi_purify(self, text: str):
         text_cleaned = text
@@ -32,19 +33,17 @@ class PurifyConfig():
         }
 
     def normal_purify(self, text: str):
-        for flt in self.filter_normal:
-            if not flt.apply(text):
-                return {
-                    "passed": False,
-                    "filtered_by": flt.__class__.__name__,
-                    "text": text
-                }
+        texts = [r["text"] for r in batch_results]
 
-        return {
-            "passed": True,
-            "filtered_by": None,
-            "text": text
-        }
+        for flt in self.filter_normal:
+            pass_flags = flt.apply(texts) 
+                                                
+            for i, passed in enumerate(pass_flags):
+                if not passed:
+                    batch_results[i]["passed"] = False
+                    batch_results[i]["filtered_by"] = flt.__class__.__name__
+                                                                                                                            
+            return batch_results
 
     def parallel_purify(self, texts: list, n_process=-1):
         n_passed = 0
@@ -58,21 +57,30 @@ class PurifyConfig():
             delayed(self.multi_purify)(text) for text in pbar1
         )
 
-        pbar2 = tqdm(fast_results, desc="Applying Normal filter", total=total)
+        buffer = []
+        pbar2 = tqdm(desc="Applying Normal filter", total=total)
         
-        for text in pbar2:
-            if text["passed"]:
+        for text in fast_results:
+            if not text["passed"]:
                 text_p = self.normal_purify(text["text"])
 
-                if text_p["passed"]:
-                    n_passed += 1
-                else:
-                    n_filtered_normal += 1
-            else:
-                text_p = text
                 n_filtered_multi += 1
+                yield text
+                pbar2.update(1)
+                continue
+            
+            buffer.append(res)
 
-            yield text_p
+            if len(buffer) >= self.batch_size:
+                processed_batch = self.normal_purify_batch(buffer)
+                for item in processed_batch:
+                    if item["passed"]:
+                        n_passed += 1
+                    else:
+                        n_filtered_normal += 1
+                    yield item
+                    pbar2.update(1)
+                buffer = []
             
             if n_filtered_multi + n_filtered_normal + n_passed > 0:
                 pbar2.set_postfix({
@@ -81,3 +89,15 @@ class PurifyConfig():
                     "multi_filtered": n_filtered_multi,
                     "ratio": f"{(n_filtered_multi + n_filtered_normal) / (n_filtered_multi + n_filtered_normal + n_passed) * 100:.3f}%"
                 })
+
+        if buffer:
+            processed_batch = self.normal_purify_batch(buffer)
+            for item in processed_batch:
+                if item["passed"]:
+                    n_passed += 1
+                else:
+                    n_filtered_normal += 1
+                yield item
+                pbar2.update(1)
+
+        pbar2.close()
