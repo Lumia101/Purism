@@ -86,8 +86,8 @@ class DedupFilter(BaseFilter):
 
 # Measure the PPL of corpus and filter corpus with excessively high PPL.
 class PPLFilter(BaseFilter):
-    def __init__(self, ppl_threshold=180.0, batch_size=16):
-        self.model_id = "LiquidAI/LFM2.5-350M"
+    def __init__(self, ppl_threshold=180.0, batch_size=8):
+        self.model_id = "LiquidAI/LFM2.5-1.2B-Instruct"
         self.model = None
         self.tokenizer = None
         self.ppl_threshold = ppl_threshold
