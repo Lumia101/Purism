@@ -27,8 +27,8 @@
 ## Pipeline
 * Changes to function names and additions to features in PurifyConfig
   * Added parallel_purify function
-    * You can perform multi-core processing with this command.
-  * Separate the purify function into multi_purify and normal_purify.
+    * You can use multi-core processing and batch processing with this command.
 
 ## Filter
-* Modified various filter logics to suit the multiprocessing environment.
+* Modified various filter logics to suit the parallel_purify environment.
+* Integrated advanced_filter.py and model_filter.py.
