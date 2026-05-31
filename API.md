@@ -9,40 +9,7 @@
 |normalizer|list|Receive a list of normalization techniques to apply.|
 |filter_multi|list|Receives filters capable of multicore processing.|
 |filter_normal|list|Receives filters that cannot be processed by multicore processing.|
-
-> def **multi_purify(text):**
-
-|value|type|function|
-|:-------------|:------:|:---------------|
-|text|str|Receives the text to apply filtering.|
-
-Apply normalizations and the filters entered into filter_multi.
-
-> **Return value**
-```Python
-{
-    "passed": bool, # Returns False for harmful document and True for harmless documents.
-    "filtered_by": str or None, # Returns a filter that filters the input document, and returns None if "passed" is true.
-    "text": str # Document after normalization from "raw_text"
-}
-```
-
-> def **normal_purify(text):**
-
-|value|type|function|
-|:-------------|:------:|:---------------|
-|text|str|Receives the text to apply filtering.|
-
-Apply the filters entered into filter_batch.
-
-> **Return value**
-```Python
-{
-    "passed": bool, # Returns False for harmful document and True for harmless documents.
-    "filtered_by": str or None, # Returns a filter that filters the input document, and returns None if "passed" is true.
-    "text": str # Document after normalization from "raw_text"
-}
-```
+|batch_size|int|Receives the batch size to be used in batch processing.|
 
 > def **parallel_purify(texts, n_process):**
 
@@ -61,6 +28,8 @@ Rapidly apply normalization and filters through multi-core processing.
     "text": str # Document after normalization from "raw_text"
 })
 ```
+
+---
 
 # Normalizers
 
@@ -313,17 +282,18 @@ bool # Returns False if a document with similar content already exists, otherwis
 
 ## class **PPLFilter(BaseFilter):**
 
-> def **__init__(ppl_threshold=180.0):**
+> def **__init__(ppl_threshold=180.0, batch_size=16):**
 
 |value|type|function|
 |:-------------|:------:|:---------------|
 |ppl_threshold|float|Determines how high the level of bewilderment must be to filter. The appropriate value varies depending on the type of data.|
+|batch_size|int|Receives the batch size during batch processing.|
 
 > def **apply(text):**
 
 |value|type|function|
 |:-------------|:------:|:---------------|
-|text|str|Receives the text to filter.|
+|text|list[str]|Receives the text to filter.|
 
 This command filters documents where the sentence's perplexity is above a certain value.
 
