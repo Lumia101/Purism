@@ -110,7 +110,7 @@ class PurifyConfig():
                         "passed": n_passed,
                         "normal_filtered": n_filtered_normal,
                         "multi_filtered": n_filtered_multi,
-                        "ratio": f"{(n_filtered_multi + n_filtered_normal) / total * 100:.3f}%",
+                        "ratio": f"{(n_filtered_multi + n_filtered_normal) / (n_filtered_multi + n_filtered_normal + n_passed) * 100:.3f}%",
                     }
                 )
 
