@@ -41,12 +41,6 @@ class PurifyConfig():
         }
 
     def normal_purify_batch(self, batch_results: list[dict]):
-        """
-        Apply the second-stage filters to a batch of already-normalized texts.
-
-        This method keeps the original order of batch_results and updates each
-        item in-place with the first filter that rejects it.
-        """
         if not batch_results:
             return batch_results
 
@@ -116,7 +110,7 @@ class PurifyConfig():
                         "passed": n_passed,
                         "normal_filtered": n_filtered_normal,
                         "multi_filtered": n_filtered_multi,
-                        "ratio": f"{(n_filtered_multi + n_filtered_normal) / (n_filtered_multi + n_filtered_normal + n_passed) * 100:.3f}%",
+                        "ratio": f"{(n_filtered_multi + n_filtered_normal) / total * 100:.3f}%",
                     }
                 )
 
