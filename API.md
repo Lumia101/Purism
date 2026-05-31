@@ -2,7 +2,7 @@
 
 ## class **PurifyConfig():**
 
-> def **__init__(normalizer, filter_multi, filter_normal):**
+> def **__init__(normalizer, filter_multi, filter_normal, batch_size=8):**
 > 
 |value|type|function|
 |:-------------|:------:|:---------------|
@@ -11,7 +11,7 @@
 |filter_normal|list|Receives filters that cannot be processed by multicore processing.|
 |batch_size|int|Receives the batch size to be used in batch processing.|
 
-> def **parallel_purify(texts, n_process):**
+> def **parallel_purify(texts, n_process=-1):**
 
 |value|type|function|
 |:-------------|:------:|:---------------|
@@ -282,7 +282,7 @@ bool # Returns False if a document with similar content already exists, otherwis
 
 ## class **PPLFilter(BaseFilter):**
 
-> def **__init__(ppl_threshold=180.0, batch_size=16):**
+> def **__init__(ppl_threshold=180.0, batch_size=8):**
 
 |value|type|function|
 |:-------------|:------:|:---------------|
