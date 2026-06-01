@@ -99,8 +99,7 @@ class PPLFilter(BaseFilter):
             self.model = AutoModelForCausalLM.from_pretrained(
                 self.model_id,
                 device_map="auto",
-                torch_dtype="auto",
-                quantization_config=quant_config,
+                torch_dtype="auto"
             )
             self.model.eval()
 
