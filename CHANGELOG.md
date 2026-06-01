@@ -20,3 +20,16 @@
 
 ## Normalizers
 * Fixed an issue where only one normalization command was applied at a time.
+
+# v2.0.0
+> Improve data processing speed
+
+## Pipeline
+* Added multi-core processing and batch processing capabilities
+  * It is available through the parallel_purify() function.
+  * As a result, the filtering result is returned in generator format.
+
+## Filter
+* Modified various filter logics to suit the parallel_purify() environment.
+* Integrated advanced_filter.py and model_filter.py.
+* Removed quantization and reduced the model size.

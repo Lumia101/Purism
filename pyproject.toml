@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "purism"
-version = "1.0.2"
+version = "2.0.0"
 description = "Automatic data filtering library specialized in Korean data purification"
 authors = [
   {name="Lumia101"}
@@ -14,10 +14,11 @@ requires-python = ">=3.11"
 dependencies = [
     "torch",
     "transformers",
-    "bitsandbytes",
     "lingua-language-detector",
     "datasketch[redis]",
-    "ftfy"
+    "ftfy",
+    "joblib",
+    "tqdm"
 ]
 
 [project.urls]
