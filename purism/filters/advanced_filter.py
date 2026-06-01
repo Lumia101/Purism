@@ -2,7 +2,7 @@
 import hashlib
 
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+from transformers import AutoModelForCausalLM, AutoTokenizer
 from lingua import Language, LanguageDetectorBuilder
 from datasketch import MinHash, MinHashLSH
 
@@ -91,16 +91,11 @@ class PPLFilter(BaseFilter):
         self.model = None
         self.tokenizer = None
         self.ppl_threshold = ppl_threshold
+        self.precision = torch.bfloat16 if torch.cuda.is_bf16_supported(including_emulation=False) else torch.float16
         self.batch_size = batch_size
 
     def load_model(self):
         if self.model is None:
-            quant_config = BitsAndBytesConfig(
-                load_in_4bit=True,
-                bnb_4bit_quant_type="nf4",
-                bnb_4bit_use_double_quant=True,
-            )
-
             self.model = AutoModelForCausalLM.from_pretrained(
                 self.model_id,
                 device_map="auto",
