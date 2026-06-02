@@ -38,5 +38,4 @@
 > Reduce model size and processing speed further
 
 ## Pipeline
-* Replace multi-core processing method (threading -> loky)
 * Replace the PPL measurement model with a lighter model
