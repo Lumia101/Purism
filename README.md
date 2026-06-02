@@ -18,63 +18,93 @@ pip install purism
 [C4 dataset](https://huggingface.co/datasets/allenai/c4) has **"Clean"** in its name, but it is **NOT clean** at all (especially the Korean subset). This is a code that performs **additional filtering** on the C4 dataset using this library.
 
 ```Python
-import os
-from purism import PurifyConfig, UnicodeCleaner, UICleaner, TextCleaner, HarmfulWordsFilter, SpamWordsFilter
 from datasets import load_dataset
+from collections import Counter
 from tqdm.auto import tqdm
+from purism import PurifyConfig, UnicodeCleaner, UICleaner, TextCleaner, LengthFilter, HarmfulWordsFilter, SpamWordsFilter, SignAbuseFilter, PIIFilter, LanguageFilter, DedupFilter
 
-# Load dataset
+take_count = 40000
+batch_size = 64
+
+print("=" * 100)
 ds = load_dataset(
     "allenai/c4",
     "ko",
     split="train",
     streaming=True
-).take(1000)
+).take(take_count)
 
-# Load normalization techniques
-norms = [
+ds_sample = []
+
+for text in tqdm(ds, desc="Extracting texts", total=take_count):
+    ds_sample.append(text["text"])
+
+normalizers = [
     UnicodeCleaner("NFC"),
     UICleaner(),
     TextCleaner()
 ]
 
-# Load filters
-fast_filters = [
-    HarmfulWordsFilter(3),
-    SpamWordsFilter(4),
+multi_filters = [
+    LengthFilter(50, 8000),
+    HarmfulWordsFilter(4),
+    SpamWordsFilter(6),
+    SignAbuseFilter(0.2),
+    PIIFilter()
+]
+
+batch_filters = [
+    LanguageFilter(),
     DedupFilter()
 ]
 
-heavy_filters = [
-    PPLFilter()
-]
+counter = Counter()
+filtered_all = 0
+n_passed = 0
+passed = []
+n_filtered = 0
+filtered = []
+reason = []
+purifier = PurifyConfig(normalizers, multi_filters, batch_filters, batch_size)
 
-# Load the previously defined filters and normalization techniques into PurifyConfig.
-purifier = PurifyConfig(
-    norms,
-    fast_filters,
-    heavy_filters
-)
+print("=" * 100)
+result = purifier.parallel_purify(ds_sample, -1)
 
-all_list = []
+for text in result:
+    if text["passed"]:
+        counter["Passed"] += 1
+        if n_passed < 10:
+            passed.append(text["text"])
+            n_passed += 1
+    else:
+        filtered_all += 1
+        counter[text["filtered_by"]] += 1
+        if n_filtered < 10:
+            filtered.append(text["text"])
+            reason.append(text["filtered_by"])
+            n_filtered += 1
 
-for text in ds:
-    all_list.append(ds["text"])
-
-result = purifier.parallel_purify(all_list, os.cpu_count()) # Apply the normalization technique and filters loaded in PurifyConfig.
-
-print("=" * 200)
-
-for i in range(20):
-    print(f"Sample {i + 1} (passed: {result[i]["passed"]}): {result[i]["text"]}")
-    print("=" * 200)
+print("=" * 100)
+print("Purification complete!")
+print("=" * 100)
+print("<|Filtering statistics|>")
+print(" ")
+print(f"Passed: {counter["Passed"]:,} ({counter["Passed"] / take_count:.3f}%)")
+print(f"LengthFilter: {counter["LengthFilter"]:,} ({counter["LengthFilter"] / take_count:.3f}%)")
+print(f"HarmfulWordsFilter: {counter["HarmfulWordsFilter"]:,} ({counter["HarmfulWordsFilter"] / take_count:.3f}%)")
+print(f"SpamWordsFilter: {counter["SpamWordsFilter"]:,} ({counter["SpamWordsFilter"] / take_count:.3f}%)")
+print(f"SignAbuseFilter: {counter["SignAbuseFilter"]:,} ({counter["SignAbuseFilter"] / take_count:.3f}%)")
+print(f"PIIFilter: {counter["PIIFilter"]:,} ({counter["PIIFilter"] / take_count:.3f}%)")
+print(f"LanguageFilter: {counter["LanguageFilter"]:,} ({counter["LanguageFilter"] / take_count:.3f}%)")
+print(f"DedupFilter: {counter["DedupFilter"]:,} ({counter["DedupFilter"] / take_count:.3f}%)")
+print(f"Total number of filtered texts: {filtered_all:,} ({filtered_all / take_count:.3f}%)")
+print("=" * 100)
 ```
-You can see that corpus marked as "passed: True" are better than corpus marked as "passed: False".
+If you look at the results after running this code, you can see that there are many filtered texts.
 
 ## API
-This library contains many more types of filters in addition to the two mentioned earlier. If you would like to see more features, please visit [this page.](https://github.com/Lumia101/Purism/blob/main/API.md)
+More features can be found on [this page.](https://github.com/Lumia101/Purism/blob/main/API.md)
 
 # Limitations
-
 * This library can accurately filter only Korean text. Modification of the source code is required to use other languages.
 * This library is not always accurate. It can filter out non-harmful corpora, but may fail to filter out some harmful corpora.
