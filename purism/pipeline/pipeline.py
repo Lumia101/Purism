@@ -75,7 +75,7 @@ class PurifyConfig():
 
         fast_results = Parallel(
             n_jobs=n_process,
-            backend="loky",
+            backend="threading",
             return_as="generator",
         )(
             delayed(self.multi_purify)(text) for text in pbar1
