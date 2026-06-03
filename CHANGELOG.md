@@ -39,3 +39,9 @@
 
 ## Pipeline
 * Replace the PPL measurement model with a lighter model
+
+## Resource
+* Update the list of harmful words.
+
+## Filter
+* Adjusted the default values applied to PPLFilter.

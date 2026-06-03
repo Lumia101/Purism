@@ -282,7 +282,7 @@ bool # Returns False if a document with similar content already exists, otherwis
 
 ## class **PPLFilter(BaseFilter):**
 
-> def **__init__(ppl_threshold=400.0, batch_size=16):**
+> def **__init__(ppl_threshold=500.0, batch_size=16):**
 
 |value|type|function|
 |:-------------|:------:|:---------------|
