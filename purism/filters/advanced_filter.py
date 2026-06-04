@@ -91,7 +91,6 @@ class PPLFilter(BaseFilter):
         self.model = None
         self.tokenizer = None
         self.ppl_threshold = ppl_threshold
-        self.precision = torch.bfloat16 if torch.cuda.is_bf16_supported(including_emulation=False) else torch.float16
         self.batch_size = batch_size
 
     def load_model(self):
