@@ -86,12 +86,11 @@ class DedupFilter(BaseFilter):
 
 # Measure the PPL of corpus and filter corpus with excessively high PPL.
 class PPLFilter(BaseFilter):
-    def __init__(self, ppl_threshold=320.0, batch_size=16):
-        self.model_id = "LiquidAI/LFM2-700M"
+    def __init__(self, ppl_threshold=500.0, batch_size=16):
+        self.model_id = "LiquidAI/LFM2.5-350M"
         self.model = None
         self.tokenizer = None
         self.ppl_threshold = ppl_threshold
-        self.precision = torch.bfloat16 if torch.cuda.is_bf16_supported(including_emulation=False) else torch.float16
         self.batch_size = batch_size
 
     def load_model(self):
@@ -147,7 +146,7 @@ class PPLFilter(BaseFilter):
 
         return torch.exp(sentence_loss).cpu().tolist()
 
-    def apply_batch(self, texts: list[str]):
+    def apply(self, texts: list[str]):
         self.load_model()
 
         results = [False] * len(texts)
@@ -177,6 +176,3 @@ class PPLFilter(BaseFilter):
             results[idx] = ppl <= self.ppl_threshold
 
         return results
-
-    def apply(self, text: list[str]):
-        return self.apply_batch([text])[0]

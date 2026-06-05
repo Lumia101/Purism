@@ -15,7 +15,7 @@ from purism.filters.advanced_filter import LanguageFilter, DedupFilter, PPLFilte
 
 # Setting Settings for Data Purification
 class PurifyConfig():
-    def __init__(self, normalizer, filter_multi, filter_normal, batch_size=8):
+    def __init__(self, normalizer, filter_multi, filter_normal, batch_size=16):
         self.normalizer = normalizer
         self.filter_multi = filter_multi
         self.filter_normal = filter_normal
@@ -52,12 +52,11 @@ class PurifyConfig():
                 break
 
             texts = [batch_results[i]["text"] for i in current_indices]
-
             if isinstance(flt, PPLFilter):
-                pass_flags = flt.apply_batch(texts)
+                pass_flags = flt.apply(texts)
             else:
                 pass_flags = [flt.apply(text) for text in texts]
-
+            
             for idx, passed in zip(current_indices, pass_flags):
                 if not passed:
                     batch_results[idx]["passed"] = False
@@ -83,6 +82,7 @@ class PurifyConfig():
 
         buffer = []
         pbar2 = tqdm(desc="Applying Normal filter", total=total)
+        print("=" * 100)
 
         for text in fast_results:
             if not text["passed"]:

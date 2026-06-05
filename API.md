@@ -2,7 +2,7 @@
 
 ## class **PurifyConfig():**
 
-> def **__init__(normalizer, filter_multi, filter_normal, batch_size=8):**
+> def **__init__(normalizer, filter_multi, filter_normal, batch_size=16):**
 > 
 |value|type|function|
 |:-------------|:------:|:---------------|
@@ -282,7 +282,7 @@ bool # Returns False if a document with similar content already exists, otherwis
 
 ## class **PPLFilter(BaseFilter):**
 
-> def **__init__(ppl_threshold=180.0, batch_size=8):**
+> def **__init__(ppl_threshold=500.0, batch_size=16):**
 
 |value|type|function|
 |:-------------|:------:|:---------------|
@@ -293,7 +293,7 @@ bool # Returns False if a document with similar content already exists, otherwis
 
 |value|type|function|
 |:-------------|:------:|:---------------|
-|text|list[str]|Receives the text to filter.|
+|text|list[str]|Receives the list of texts to filter.|
 
 This command filters documents where the sentence's perplexity is above a certain value.
 

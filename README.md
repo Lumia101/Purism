@@ -46,10 +46,10 @@ normalizers = [
 ]
 
 multi_filters = [
-    LengthFilter(50, 8000),
-    HarmfulWordsFilter(4),
-    SpamWordsFilter(6),
-    SignAbuseFilter(0.2),
+    LengthFilter(),
+    HarmfulWordsFilter(),
+    SpamWordsFilter(),
+    SignAbuseFilter(),
     PIIFilter()
 ]
 
@@ -89,15 +89,33 @@ print("Purification complete!")
 print("=" * 100)
 print("<|Filtering statistics|>")
 print(" ")
-print(f"Passed: {counter["Passed"]:,} ({counter["Passed"] / take_count:.3f}%)")
-print(f"LengthFilter: {counter["LengthFilter"]:,} ({counter["LengthFilter"] / take_count:.3f}%)")
-print(f"HarmfulWordsFilter: {counter["HarmfulWordsFilter"]:,} ({counter["HarmfulWordsFilter"] / take_count:.3f}%)")
-print(f"SpamWordsFilter: {counter["SpamWordsFilter"]:,} ({counter["SpamWordsFilter"] / take_count:.3f}%)")
-print(f"SignAbuseFilter: {counter["SignAbuseFilter"]:,} ({counter["SignAbuseFilter"] / take_count:.3f}%)")
-print(f"PIIFilter: {counter["PIIFilter"]:,} ({counter["PIIFilter"] / take_count:.3f}%)")
-print(f"LanguageFilter: {counter["LanguageFilter"]:,} ({counter["LanguageFilter"] / take_count:.3f}%)")
-print(f"DedupFilter: {counter["DedupFilter"]:,} ({counter["DedupFilter"] / take_count:.3f}%)")
-print(f"Total number of filtered texts: {filtered_all:,} ({filtered_all / take_count:.3f}%)")
+print(f"Passed: {counter["Passed"]:,} ({counter["Passed"] / take_count * 100:.3f}%)")
+print(f"LengthFilter: {counter["LengthFilter"]:,} ({counter["LengthFilter"] / take_count * 100:.3f}%)")
+print(f"HarmfulWordsFilter: {counter["HarmfulWordsFilter"]:,} ({counter["HarmfulWordsFilter"] / take_count * 100:.3f}%)")
+print(f"SpamWordsFilter: {counter["SpamWordsFilter"]:,} ({counter["SpamWordsFilter"] / take_count * 100:.3f}%)")
+print(f"SignAbuseFilter: {counter["SignAbuseFilter"]:,} ({counter["SignAbuseFilter"] / take_count * 100:.3f}%)")
+print(f"PIIFilter: {counter["PIIFilter"]:,} ({counter["PIIFilter"] / take_count * 100:.3f}%)")
+print(f"LanguageFilter: {counter["LanguageFilter"]:,} ({counter["LanguageFilter"] / take_count * 100:.3f}%)")
+print(f"DedupFilter: {counter["DedupFilter"]:,} ({counter["DedupFilter"] / take_count * 100:.3f}%)")
+print(f"Total number of filtered texts: {filtered_all:,} ({filtered_all / take_count * 100:.3f}%)")
+print("=" * 100)
+print("<|Passed Samples|>")
+print(" ")
+
+for i, text in enumerate(passed):
+    print("=" * 100)
+    print(f"Sample {i + 1}")
+    print(f"{text[i]}")
+
+print("=" * 100)
+print("<|Filtered Samples|>")
+print(" ")
+
+for i, text in enumerate(filtered):
+    print("=" * 100)
+    print(f"Sample {i + 1} (Filtered by {reason[i]})")
+    print(f"{text[i]}")
+
 print("=" * 100)
 ```
 If you look at the results after running this code, you can see that there are many filtered texts.
@@ -107,4 +125,4 @@ More features can be found on [this page.](https://github.com/Lumia101/Purism/bl
 
 # Limitations
 * This library can accurately filter only Korean text. Modification of the source code is required to use other languages.
-* This library is not always accurate. It can filter out non-harmful corpora, but may fail to filter out some harmful corpora.
+* This library is not always accurate. It can filter out non-harmful text, but may fail to filter out some harmful text.

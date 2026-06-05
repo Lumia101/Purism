@@ -33,3 +33,15 @@
 * Modified various filter logics to suit the parallel_purify() environment.
 * Integrated advanced_filter.py and model_filter.py.
 * Removed quantization and reduced the model size.
+
+# v2.1.0
+> Reduce model size and processing speed further
+
+## Pipeline
+* Replace the PPL measurement model with a lighter model
+
+## Resource
+* Update the list of harmful words.
+
+## Filter
+* Adjusted the default values applied to PPLFilter.
