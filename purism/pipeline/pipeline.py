@@ -79,6 +79,7 @@ class PurifyConfig():
 
         buffer = []
         pbar2 = tqdm(desc="Applying Normal filter", total=total)
+        print("=" * 100)
 
         for text in fast_results:
             if not text["passed"]:

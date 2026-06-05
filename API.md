@@ -293,7 +293,7 @@ bool # Returns False if a document with similar content already exists, otherwis
 
 |value|type|function|
 |:-------------|:------:|:---------------|
-|text|list[str]|Receives the text to filter.|
+|text|list[str]|Receives the list of texts to filter.|
 
 This command filters documents where the sentence's perplexity is above a certain value.
 
