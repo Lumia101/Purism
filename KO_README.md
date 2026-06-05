@@ -98,7 +98,7 @@ print(f"DedupFilter: {counter["DedupFilter"]:,} ({counter["DedupFilter"] / take_
 print(f"Total number of filtered texts: {filtered_all:,} ({filtered_all / take_count:.3f}%)")
 print("=" * 100)
 ```
-이 코드를 실행한 후 결과를 보면 필터링 된 텍스트들이 많음을 알 수 있습니다.이 코드를 실행한 후 결과를 보면 필터링 된 텍스트들이 많음을 알 수 있습니다.
+이 코드를 실행한 후 필터링 결과를 보면 필터링 된 텍스트들이 많음을 알 수 있습니다.
 
 ## API
 더 많은 기능들은 [이 페이지](https://github.com/Lumia101/Purism/blob/main/API.md)에서 찾을 수 있습니다.
