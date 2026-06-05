@@ -52,11 +52,7 @@ class PurifyConfig():
                 break
 
             texts = [batch_results[i]["text"] for i in current_indices]
-
-            if isinstance(flt, PPLFilter):
-                pass_flags = flt.apply_batch(texts)
-            else:
-                pass_flags = [flt.apply(text) for text in texts]
+            pass_flags = [flt.apply(text) for text in texts]
 
             for idx, passed in zip(current_indices, pass_flags):
                 if not passed:

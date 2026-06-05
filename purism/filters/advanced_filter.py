@@ -146,7 +146,7 @@ class PPLFilter(BaseFilter):
 
         return torch.exp(sentence_loss).cpu().tolist()
 
-    def apply_batch(self, texts: list[str]):
+    def apply(self, texts: list[str]):
         self.load_model()
 
         results = [False] * len(texts)
@@ -176,6 +176,3 @@ class PPLFilter(BaseFilter):
             results[idx] = ppl <= self.ppl_threshold
 
         return results
-
-    def apply(self, text: list[str]):
-        return self.apply_batch([text])[0]
