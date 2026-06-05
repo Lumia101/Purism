@@ -125,4 +125,4 @@ More features can be found on [this page.](https://github.com/Lumia101/Purism/bl
 
 # Limitations
 * This library can accurately filter only Korean text. Modification of the source code is required to use other languages.
-* This library is not always accurate. It can filter out non-harmful corpora, but may fail to filter out some harmful corpora.
+* This library is not always accurate. It can filter out non-harmful text, but may fail to filter out some harmful text.
